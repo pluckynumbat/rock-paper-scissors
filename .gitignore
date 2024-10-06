@@ -25,4 +25,4 @@ go.work.sum
 .env
 
 # Add mac ds store
-.DS_Store
+**/.DS_Store
