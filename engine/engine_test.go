@@ -124,7 +124,5 @@ func TestChooseRandom(t *testing.T) {
 		if want != have {
 			t.Fatalf("Error in ChooseFixed: want: %s, have: %s", want, have)
 		}
-
-		//fmt.Printf("P1: %s, P2: %s, Winner: %s \n", player1.choice, player2.choice, winner.Name)
 	}
 }
