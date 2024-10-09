@@ -14,6 +14,8 @@ const (
 	Scissors
 )
 
+const numChoices = 3
+
 type Player struct {
 	Name   string
 	choice Choice
@@ -21,8 +23,8 @@ type Player struct {
 
 var NoPlayer = Player{"No One", None}
 
-func (p Player) String() string {
-	return p.Name
+func (p *Player) String() string {
+	return (*p).Name
 }
 
 // implement Stringer
@@ -64,7 +66,7 @@ func (p *Player) ChooseFixed(c Choice) {
 }
 
 func (p *Player) ChooseRandom() {
-	roll := rand.IntN(3) + 1
+	roll := rand.IntN(numChoices) + 1
 
 	p.choice = Choice(roll)
 }
