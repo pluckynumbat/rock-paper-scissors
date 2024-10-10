@@ -8,11 +8,18 @@ import (
 
 func main() {
 	fmt.Println("Let's play rock paper scissors!")
+	p1, p2 := createPlayers("Player 1", "Player2")
+	runGameLoop(p1, p2)
+}
 
-	player1 := engine.Player{Name: "Player 1"}
-	player2 := new(engine.Player)
-	player2.Name = "Player 2"
+func createPlayers(n1, n2 string) (p1, p2  *engine.Player) {
 
+	p1 = &engine.Player{Name: n1}
+	p2 = &engine.Player{Name: n2}
+	return p1, p2
+}
+
+func runGameLoop(p1, p2  *engine.Player) {
 	for done := false; done != true; {
 		fmt.Println("For a fixed choice game, press 1")
 		fmt.Println("For a random choice game, press 2")
@@ -27,10 +34,10 @@ func main() {
 
 		switch option {
 		case "1":
-			runFixedChoice(&player1, player2)
+			runFixedChoice(p1, p2)
 
 		case "2":
-			runRandomChoice(&player1, player2)
+			runRandomChoice(p1, p2)
 
 		default:
 			done = true
