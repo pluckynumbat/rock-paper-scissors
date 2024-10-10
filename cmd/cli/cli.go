@@ -96,7 +96,20 @@ func runFixedChoice(p1, p2 *engine.Player) {
 }
 
 func runRandomChoice(p1, p2 *engine.Player) {
+	fmt.Println("Random choice mode! ")
 
+	p1.ChooseRandom()
+	fmt.Println(p1, "chose:", p1.PrintChoice())
+
+	p2.ChooseRandom()
+	fmt.Println(p2, "chose:", p2.PrintChoice())
+
+	winner, err := engine.Play(p1, p2)
+	if err != nil {
+		fmt.Printf("Play failed with error: %v \n", err)
+		return
+	}
+	fmt.Println(winner, "Won! \n")
 }
 
 func getChoiceFromInput(input string) (engine.Choice, error) {
