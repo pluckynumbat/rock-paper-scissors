@@ -12,14 +12,14 @@ func main() {
 	runGameLoop(p1, p2)
 }
 
-func createPlayers(n1, n2 string) (p1, p2  *engine.Player) {
+func createPlayers(n1, n2 string) (p1, p2 *engine.Player) {
 
 	p1 = &engine.Player{Name: n1}
 	p2 = &engine.Player{Name: n2}
 	return p1, p2
 }
 
-func runGameLoop(p1, p2  *engine.Player) {
+func runGameLoop(p1, p2 *engine.Player) {
 	for done := false; done != true; {
 		fmt.Println("For a fixed choice game, press 1")
 		fmt.Println("For a random choice game, press 2")
