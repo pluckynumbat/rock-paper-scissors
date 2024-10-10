@@ -44,6 +44,11 @@ func runFixedChoice(p1, p2 *engine.Player) {
 	var choice1, choice2 engine.Choice
 	var choiceErr error
 
+	fmt.Println("Fixed choice mode, accepted inputs are as follows:")
+	fmt.Println("For Rock: press R or r")
+	fmt.Println("For Paper: press P or p")
+	fmt.Println("For Scissors: press S or s")
+
 	fmt.Printf("Enter choice for %s: ", p1)
 
 	for {
