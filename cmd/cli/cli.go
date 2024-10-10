@@ -47,51 +47,27 @@ func runGameLoop(p1, p2 *engine.Player) {
 
 func runFixedChoice(p1, p2 *engine.Player) {
 
-	var input1, input2 string
-	var choice1, choice2 engine.Choice
-	var choiceErr error
-
 	fmt.Println("Fixed choice mode, accepted inputs are as follows:")
 	fmt.Println("For Rock: press R or r")
 	fmt.Println("For Paper: press P or p")
 	fmt.Println("For Scissors: press S or s")
 
 	fmt.Printf("Enter choice for %s: ", p1)
-
-	for {
-		_, err := fmt.Scanln(&input1)
-		if err != nil {
-			fmt.Println(fmt.Errorf("input failed with %v", err))
-			break
-		}
-		choice1, choiceErr = getChoiceFromInput(input1)
-		if choiceErr != nil {
-			fmt.Println(fmt.Errorf("choice assignment failed on: %v", choiceErr))
-			fmt.Println("Please try again...")
-		} else {
-			break
-		}
+	ch, err := runFixedChoiceInputLoop()
+	if err != nil {
+		fmt.Printf("Fixed Choice failed with error: %v \n", err)
+		return
 	}
-	p1.ChooseFixed(choice1)
+	p1.ChooseFixed(ch)
 	fmt.Println(p1, "chose:", p1.PrintChoice())
 
 	fmt.Printf("Enter choice for %s: ", p2)
-
-	for {
-		_, err := fmt.Scanln(&input2)
-		if err != nil {
-			fmt.Println(fmt.Errorf("input failed with %v", err))
-			break
-		}
-		choice2, choiceErr = getChoiceFromInput(input2)
-		if choiceErr != nil {
-			fmt.Println(fmt.Errorf("choice assignment failed on: %v", choiceErr))
-			fmt.Println("Please try again...")
-		} else {
-			break
-		}
+	ch, err = runFixedChoiceInputLoop()
+	if err != nil {
+		fmt.Printf("Fixed Choice failed with error: %v \n", err)
+		return
 	}
-	p2.ChooseFixed(choice2)
+	p2.ChooseFixed(ch)
 	fmt.Println(p2, "chose:", p2.PrintChoice())
 
 	winner, err := engine.Play(p1, p2)
@@ -99,7 +75,7 @@ func runFixedChoice(p1, p2 *engine.Player) {
 		fmt.Printf("Play failed with error: %v \n", err)
 		return
 	}
-	fmt.Println(winner, "Won! \n")
+	fmt.Println(winner, "won! \n")
 }
 
 func runRandomChoice(p1, p2 *engine.Player) {
@@ -116,7 +92,27 @@ func runRandomChoice(p1, p2 *engine.Player) {
 		fmt.Printf("Play failed with error: %v \n", err)
 		return
 	}
-	fmt.Println(winner, "Won! \n")
+	fmt.Println(winner, "won! \n")
+}
+
+func runFixedChoiceInputLoop() (engine.Choice, error) {
+
+	var input string
+	for {
+		_, err := fmt.Scanln(&input)
+		if err != nil {
+			fmt.Println(fmt.Errorf("input failed with %v", err))
+			break
+		}
+		choice, choiceErr := getChoiceFromInput(input)
+		if choiceErr != nil {
+			fmt.Println(fmt.Errorf("choice assignment failed on: %v", choiceErr))
+			fmt.Println("Please try again...")
+		} else {
+			return choice, nil
+		}
+	}
+	return engine.None, fmt.Errorf("fixed choice input loop failed!")
 }
 
 func getChoiceFromInput(input string) (engine.Choice, error) {
