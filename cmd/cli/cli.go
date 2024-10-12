@@ -8,15 +8,18 @@ import (
 
 func main() {
 	fmt.Println("Let's play rock paper scissors!")
-	p1, p2 := createPlayers("Player 1", "Player2")
-	runGameLoop(p1, p2)
+	ps := createPlayers("Player 1", "Player 2")
+	runGameLoop(ps[0], ps[1])
 }
 
-func createPlayers(n1, n2 string) (p1, p2 *engine.Player) {
+func createPlayers(inputs ...string) []*engine.Player {
 
-	p1 = &engine.Player{Name: n1}
-	p2 = &engine.Player{Name: n2}
-	return p1, p2
+	var players []*engine.Player
+	for _, name := range inputs {
+		players = append(players, &engine.Player{Name: name})
+
+	}
+	return players
 }
 
 func runGameLoop(p1, p2 *engine.Player) {
