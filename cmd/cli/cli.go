@@ -75,7 +75,7 @@ func runFixedChoice(p1, p2 *engine.Player) {
 		fmt.Printf("Play failed with error: %v \n", err)
 		return
 	}
-	fmt.Println(winner, "won! \n")
+	fmt.Println(winner, "won!")
 }
 
 func runRandomChoice(p1, p2 *engine.Player) {
@@ -92,7 +92,7 @@ func runRandomChoice(p1, p2 *engine.Player) {
 		fmt.Printf("Play failed with error: %v \n", err)
 		return
 	}
-	fmt.Println(winner, "won! \n")
+	fmt.Println(winner, "won!")
 }
 
 func runFixedChoiceInputLoop() (engine.Choice, error) {
