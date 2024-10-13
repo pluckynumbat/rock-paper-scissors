@@ -8,8 +8,7 @@ import (
 
 func main() {
 	fmt.Println("Let's play rock paper scissors!")
-	ps := createPlayers("Player 1", "Player 2")
-	runGameLoop(ps[0], ps[1])
+	runGameLoop()
 }
 
 func createPlayers(inputs ...string) []*engine.Player {
@@ -22,10 +21,11 @@ func createPlayers(inputs ...string) []*engine.Player {
 	return players
 }
 
-func runGameLoop(p1, p2 *engine.Player) {
+func runGameLoop() {
 	for done := false; done != true; {
-		fmt.Println("For a fixed choice game, press 1")
-		fmt.Println("For a random choice game, press 2")
+		fmt.Println("To run a completely random game, press 0")
+		fmt.Println("To play against a random choice, press 1")
+		fmt.Println("To input both choices yourself, press 2")
 		fmt.Println("Press any other key to quit...")
 
 		var option string
@@ -36,11 +36,20 @@ func runGameLoop(p1, p2 *engine.Player) {
 		}
 
 		switch option {
+		case "0":
+			ps := createPlayers("Random 1", "Random 2")
+			printStartGameBanner(ps[0], ps[1])
+			runCompleteRandomChoiceGame(ps[0], ps[1])
+
 		case "1":
-			runFixedChoice(p1, p2)
+			ps := createPlayers("Random", "You")
+			printStartGameBanner(ps[0], ps[1])
+			runSemiInputChoiceGame(ps[0], ps[1])
 
 		case "2":
-			runRandomChoice(p1, p2)
+			ps := createPlayers("You 1", "You 2")
+			printStartGameBanner(ps[0], ps[1])
+			runCompleteInputChoiceGame(ps[0], ps[1])
 
 		default:
 			done = true
@@ -48,29 +57,24 @@ func runGameLoop(p1, p2 *engine.Player) {
 	}
 }
 
-func runFixedChoice(p1, p2 *engine.Player) {
+func printStartGameBanner(p1, p2 *engine.Player) {
+	fmt.Println("***", p1, "VS", p2, "***")
+}
 
-	fmt.Println("Fixed choice mode, accepted inputs are as follows:")
+func printChoiceInputInstructions(pl *engine.Player) {
+	fmt.Println("For",(pl.Name + ","),"accepted inputs are as follows:")
 	fmt.Println("For Rock: press R or r")
 	fmt.Println("For Paper: press P or p")
 	fmt.Println("For Scissors: press S or s")
+}
 
-	fmt.Printf("Enter choice for %s: ", p1)
-	ch, err := runFixedChoiceInputLoop()
-	if err != nil {
-		fmt.Printf("Fixed Choice failed with error: %v \n", err)
-		return
-	}
-	p1.ChooseFixed(ch)
+func runCompleteRandomChoiceGame(p1, p2 *engine.Player) {
+	fmt.Println(p1, "VS", p2, "!")
+
+	p1.ChooseRandom()
 	fmt.Println(p1, "chose:", p1.PrintChoice())
 
-	fmt.Printf("Enter choice for %s: ", p2)
-	ch, err = runFixedChoiceInputLoop()
-	if err != nil {
-		fmt.Printf("Fixed Choice failed with error: %v \n", err)
-		return
-	}
-	p2.ChooseFixed(ch)
+	p2.ChooseRandom()
 	fmt.Println(p2, "chose:", p2.PrintChoice())
 
 	winner, err := engine.Play(p1, p2)
@@ -81,13 +85,55 @@ func runFixedChoice(p1, p2 *engine.Player) {
 	fmt.Println(winner, "won!")
 }
 
-func runRandomChoice(p1, p2 *engine.Player) {
-	fmt.Println("Random choice mode! ")
-
+func runSemiInputChoiceGame(p1, p2 *engine.Player) {
+	//player 1 is random choice
 	p1.ChooseRandom()
-	fmt.Println(p1, "chose:", p1.PrintChoice())
 
-	p2.ChooseRandom()
+	//player 2 gets choice from the user
+	printChoiceInputInstructions(p2)
+
+	fmt.Printf("Enter choice for %s: ", p2)
+	ch, err := runFixedChoiceInputLoop()
+	if err != nil {
+		fmt.Printf("Fixed Choice failed with error: %v \n", err)
+		return
+	}
+	p2.ChooseFixed(ch)
+
+	//print both choices
+	fmt.Println(p1, "chose:", p1.PrintChoice())
+	fmt.Println(p2, "chose:", p2.PrintChoice())
+
+	winner, err := engine.Play(p1, p2)
+	if err != nil {
+		fmt.Printf("Play failed with error: %v \n", err)
+		return
+	}
+	fmt.Println(winner, "won!")
+}
+
+func runCompleteInputChoiceGame(p1, p2 *engine.Player) {
+	fmt.Println(p1, "VS", p2, "!")
+
+	printChoiceInputInstructions(p1)
+	fmt.Printf("Enter choice for %s: ", p1)
+	ch, err := runFixedChoiceInputLoop()
+	if err != nil {
+		fmt.Printf("Fixed Choice failed with error: %v \n", err)
+		return
+	}
+	p1.ChooseFixed(ch)
+
+	printChoiceInputInstructions(p2)
+	fmt.Printf("Enter choice for %s: ", p2)
+	ch, err = runFixedChoiceInputLoop()
+	if err != nil {
+		fmt.Printf("Fixed Choice failed with error: %v \n", err)
+		return
+	}
+	p2.ChooseFixed(ch)
+
+	fmt.Println(p1, "chose:", p1.PrintChoice())
 	fmt.Println(p2, "chose:", p2.PrintChoice())
 
 	winner, err := engine.Play(p1, p2)
