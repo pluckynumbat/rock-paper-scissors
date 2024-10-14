@@ -62,7 +62,7 @@ func printStartGameBanner(p1, p2 *engine.Player) {
 }
 
 func printChoiceInputInstructions(pl *engine.Player) {
-	fmt.Println("For",(pl.Name + ","),"accepted inputs are as follows:")
+	fmt.Println("For", (pl.Name + ","), "accepted inputs are as follows:")
 	fmt.Println("For Rock: press R or r")
 	fmt.Println("For Paper: press P or p")
 	fmt.Println("For Scissors: press S or s")
