@@ -11,7 +11,7 @@ func main() {
 	fmt.Println("running the rock-paper-server...")
 
 	http.HandleFunc("/random", playRandomGame)
-
+	http.ListenAndServe(":8080", nil)
 }
 
 func playRandomGame(w http.ResponseWriter, req *http.Request) {
