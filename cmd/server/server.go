@@ -2,16 +2,19 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/pluckynumbat/rock-paper-scissors/engine"
 )
 
 func main() {
 	fmt.Println("running the rock-paper-server...")
-	playRandomGame()
+
+	http.HandleFunc("/random", playRandomGame)
+
 }
 
-func playRandomGame() {
+func playRandomGame(w http.ResponseWriter, req *http.Request) {
 	p1 := &engine.Player{Name: "Player 1"}
 	p1.ChooseRandom()
 	fmt.Printf("%v chose %v\n", p1.String(), p1.PrintChoice())
