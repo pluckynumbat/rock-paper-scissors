@@ -19,4 +19,11 @@ func playRandomGame() {
 	p2 := &engine.Player{Name: "Player 2"}
 	p2.ChooseRandom()
 	fmt.Printf("%v chose %v\n", p2.String(), p2.PrintChoice())
+
+	win, err := engine.Play(p1, p2)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Printf("%v Won!\n", win.String())
+	}
 }
