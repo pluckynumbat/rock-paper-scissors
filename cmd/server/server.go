@@ -17,16 +17,19 @@ func main() {
 func playRandomGame(w http.ResponseWriter, req *http.Request) {
 	p1 := &engine.Player{Name: "Player 1"}
 	p1.ChooseRandom()
-	fmt.Printf("%v chose %v\n", p1.String(), p1.PrintChoice())
+	fmt.Printf(" %v:%v ", p1.String(), p1.PrintChoice())
+	fmt.Fprintf(w, "%v chose %v\n", p1.String(), p1.PrintChoice())
 
 	p2 := &engine.Player{Name: "Player 2"}
 	p2.ChooseRandom()
-	fmt.Printf("%v chose %v\n", p2.String(), p2.PrintChoice())
+	fmt.Printf(" %v:%v ", p2.String(), p2.PrintChoice())
+	fmt.Fprintf(w, "%v chose %v\n", p2.String(), p2.PrintChoice())
 
 	win, err := engine.Play(p1, p2)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("error: %v", err)
 	} else {
-		fmt.Printf("%v Won!\n", win.String())
+		fmt.Printf(" Win: %v\n", win.String())
+		fmt.Fprintf(w, "%v Won!\n", win.String())
 	}
 }
