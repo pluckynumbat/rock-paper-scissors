@@ -33,3 +33,26 @@ func playRandomGame(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, "%v Won!\n", win.String())
 	}
 }
+
+func playAgainstServer(p1 *engine.Player) (string, error) {
+	if p1.PrintChoice() == "None" {
+		return "", fmt.Errorf("Invalid choice")
+	}
+	fmt.Printf(" Player:%v ", p1.PrintChoice())
+	result := fmt.Sprintf("%v chose %v\n", p1.String(), p1.PrintChoice())
+
+	p2 := &engine.Player{Name: "Server"}
+	p2.ChooseRandom()
+	fmt.Printf(" %v:%v ", p2.String(), p2.PrintChoice())
+	result += fmt.Sprintf("%v chose %v\n", p2.String(), p2.PrintChoice())
+
+	win, err := engine.Play(p1, p2)
+	if err != nil {
+		fmt.Printf("error: %v", err)
+	} else {
+		fmt.Printf(" Win: %v\n", win.String())
+		result += fmt.Sprintf("%v Won!\n", win.String())
+	}
+
+	return result, nil
+}
