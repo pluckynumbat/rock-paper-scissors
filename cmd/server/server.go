@@ -34,6 +34,12 @@ func playRandomGame(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func createPlayerFromChoice(ch engine.Choice) *engine.Player {
+	player := &engine.Player{Name: "You"}
+	player.ChooseFixed(ch)
+	return player
+}
+
 func playAgainstServer(p1 *engine.Player) (string, error) {
 	if p1.PrintChoice() == "None" {
 		return "", fmt.Errorf("Invalid choice")
