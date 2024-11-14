@@ -11,6 +11,9 @@ func main() {
 	fmt.Println("running the rock-paper-server...")
 
 	http.HandleFunc("/random", playRandomGame)
+	http.HandleFunc("/play-rock", playRockAgainstServer)
+	http.HandleFunc("/play-paper", playPaperAgainstServer)
+	http.HandleFunc("/play-scissors", playScissorsAgainstServer)
 	http.ListenAndServe(":8080", nil)
 }
 
