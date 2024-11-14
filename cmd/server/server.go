@@ -34,6 +34,35 @@ func playRandomGame(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func playRockAgainstServer(w http.ResponseWriter, req *http.Request) {
+	result, err := playAgainstServer(createPlayerFromChoice(engine.Rock))
+	if err != nil {
+		fmt.Printf("error: %v", err)
+	} else {
+		fmt.Fprintf(w, result)
+	}
+}
+
+func playPaperAgainstServer(w http.ResponseWriter, req *http.Request) {
+
+	result, err := playAgainstServer(createPlayerFromChoice(engine.Paper))
+	if err != nil {
+		fmt.Printf("error: %v", err)
+	} else {
+		fmt.Fprintf(w, result)
+	}
+}
+
+func playScissorsAgainstServer(w http.ResponseWriter, req *http.Request) {
+
+	result, err := playAgainstServer(createPlayerFromChoice(engine.Scissors))
+	if err != nil {
+		fmt.Printf("error: %v", err)
+	} else {
+		fmt.Fprintf(w, result)
+	}
+}
+
 func createPlayerFromChoice(ch engine.Choice) *engine.Player {
 	player := &engine.Player{Name: "You"}
 	player.ChooseFixed(ch)
