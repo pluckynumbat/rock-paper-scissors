@@ -9,6 +9,15 @@ import (
 func main() {
 	fmt.Println("welcome to the rock-paper-client...")
 
+	fmt.Println("Please enter the server URL: ")
+
+	serverURL := ""
+	_, err := fmt.Scanln(&serverURL)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
 	resp, err := http.Get("http://localhost:8080/random")
 	if err != nil {
 		fmt.Println("Error: ", err)
