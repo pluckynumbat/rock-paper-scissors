@@ -25,17 +25,35 @@ func main() {
 		return
 	}
 
-	resp, err := http.Get("http://" + serverURL + ":" + portNumber + "/random")
-	if err != nil {
-		fmt.Println("Error: ", err)
-		return
-	}
-	defer resp.Body.Close()
+	option := ""
+	for {
+		fmt.Println("Options:")
+		fmt.Println("Press 1 to play a random game")
+		fmt.Println("Press any other key to exit")
 
-	fmt.Println("Response Status: ", resp.Status)
+		_, err = fmt.Scanln(&option)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
 
-	scanner := bufio.NewScanner(resp.Body)
-	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		if option != "1" {
+			return
+		}
+
+		resp, err := http.Get("http://" + serverURL + ":" + portNumber + "/random")
+		if err != nil {
+			fmt.Println("Error: ", err)
+			return
+		}
+		defer resp.Body.Close()
+
+		fmt.Println("Response Status: ", resp.Status)
+
+		scanner := bufio.NewScanner(resp.Body)
+		for scanner.Scan() {
+			fmt.Println(scanner.Text())
+		}
 	}
+
 }
