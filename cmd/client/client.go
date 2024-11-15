@@ -18,7 +18,7 @@ func main() {
 		return
 	}
 
-	resp, err := http.Get("http://localhost:8080/random")
+	resp, err := http.Get("http://" + serverURL + ":8080/random")
 	if err != nil {
 		fmt.Println("Error: ", err)
 		return
