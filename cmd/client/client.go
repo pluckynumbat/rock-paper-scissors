@@ -29,6 +29,9 @@ func main() {
 	for {
 		fmt.Println("Options:")
 		fmt.Println("Press 1 to play a random game")
+		fmt.Println("Press 'R' or 'r' to play Rock against the server")
+		fmt.Println("Press 'P' or 'p' to play Paper against the server")
+		fmt.Println("Press 'S' or 's' to play Scissors against the server")
 		fmt.Println("Press any other key to exit")
 
 		_, err = fmt.Scanln(&option)
@@ -37,23 +40,38 @@ func main() {
 			return
 		}
 
-		if option != "1" {
+		switch option {
+		case "R", "r":
+			sendServerRequest(serverURL, portNumber, "play-rock")
+
+		case "P", "p":
+			sendServerRequest(serverURL, portNumber, "play-paper")
+
+		case "S", "s":
+			sendServerRequest(serverURL, portNumber, "play-scissors")
+
+		default:
 			return
-		}
-
-		resp, err := http.Get("http://" + serverURL + ":" + portNumber + "/random")
-		if err != nil {
-			fmt.Println("Error: ", err)
-			return
-		}
-		defer resp.Body.Close()
-
-		fmt.Println("Response Status: ", resp.Status)
-
-		scanner := bufio.NewScanner(resp.Body)
-		for scanner.Scan() {
-			fmt.Println(scanner.Text())
 		}
 	}
+}
 
+func sendServerRequest(serverURL, portNumber, endpoint string) {
+	resp, err := http.Get("http://" + serverURL + ":" + portNumber + "/" + endpoint)
+	if err != nil {
+		fmt.Println("Error: ", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	printServerResponseDetails(resp)
+}
+
+func printServerResponseDetails(resp *http.Response) {
+	fmt.Println("Response Status: ", resp.Status)
+
+	scanner := bufio.NewScanner(resp.Body)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
 }
