@@ -29,6 +29,7 @@ func main() {
 	for {
 		fmt.Println("Options:")
 		fmt.Println("Press 1 to play a random game")
+		fmt.Println("Press 'R' to play Rock against the server")
 		fmt.Println("Press any other key to exit")
 
 		_, err = fmt.Scanln(&option)
@@ -37,11 +38,16 @@ func main() {
 			return
 		}
 
-		if option != "1" {
+		switch option {
+		case "1":
+			sendServerRequest(serverURL, portNumber, "random")
+
+		case "R":
+			sendServerRequest(serverURL, portNumber, "play-rock")
+
+		default:
 			return
 		}
-
-		sendServerRequest(serverURL, portNumber, "random")
 	}
 }
 
