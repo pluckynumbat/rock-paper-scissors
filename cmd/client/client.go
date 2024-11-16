@@ -48,12 +48,15 @@ func main() {
 		}
 		defer resp.Body.Close()
 
-		fmt.Println("Response Status: ", resp.Status)
-
-		scanner := bufio.NewScanner(resp.Body)
-		for scanner.Scan() {
-			fmt.Println(scanner.Text())
-		}
+		printServerResponseDetails(resp)
 	}
+}
 
+func printServerResponseDetails(resp *http.Response) {
+	fmt.Println("Response Status: ", resp.Status)
+
+	scanner := bufio.NewScanner(resp.Body)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
 }
