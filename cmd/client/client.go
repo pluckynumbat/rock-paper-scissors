@@ -41,15 +41,19 @@ func main() {
 			return
 		}
 
-		resp, err := http.Get("http://" + serverURL + ":" + portNumber + "/random")
-		if err != nil {
-			fmt.Println("Error: ", err)
-			return
-		}
-		defer resp.Body.Close()
-
-		printServerResponseDetails(resp)
+		sendServerRequest(serverURL, portNumber, "random")
 	}
+}
+
+func sendServerRequest(serverURL, portNumber, endpoint string) {
+	resp, err := http.Get("http://" + serverURL + ":" + portNumber + "/" + endpoint)
+	if err != nil {
+		fmt.Println("Error: ", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	printServerResponseDetails(resp)
 }
 
 func printServerResponseDetails(resp *http.Response) {
