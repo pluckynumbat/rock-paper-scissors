@@ -8,7 +8,7 @@ import (
 	"github.com/pluckynumbat/rock-paper-scissors/engine"
 )
 
-const internalServerErrorMsg string = "internal server error"
+const internalServerErrorMsg string = "error: internal server error"
 
 func main() {
 	fmt.Println("running the rock-paper-server...")
