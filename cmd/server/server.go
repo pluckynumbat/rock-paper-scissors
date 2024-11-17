@@ -54,7 +54,8 @@ func playPaperAgainstServer(w http.ResponseWriter, req *http.Request) {
 
 	result, err := playAgainstServer(createPlayerFromChoice(engine.Paper))
 	if err != nil {
-		fmt.Printf("error: %v", err)
+		fmt.Printf("error: %v\n", err)
+		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
 	} else {
 		fmt.Fprintf(w, result)
 	}
@@ -64,7 +65,8 @@ func playScissorsAgainstServer(w http.ResponseWriter, req *http.Request) {
 
 	result, err := playAgainstServer(createPlayerFromChoice(engine.Scissors))
 	if err != nil {
-		fmt.Printf("error: %v", err)
+		fmt.Printf("error: %v\n", err)
+		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
 	} else {
 		fmt.Fprintf(w, result)
 	}
