@@ -43,7 +43,8 @@ func playRandomGame(w http.ResponseWriter, req *http.Request) {
 func playRockAgainstServer(w http.ResponseWriter, req *http.Request) {
 	result, err := playAgainstServer(createPlayerFromChoice(engine.Rock))
 	if err != nil {
-		fmt.Printf("error: %v", err)
+		fmt.Printf("error: %v\n", err)
+		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
 	} else {
 		fmt.Fprintf(w, result)
 	}
