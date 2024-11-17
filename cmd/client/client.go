@@ -41,6 +41,9 @@ func main() {
 		}
 
 		switch option {
+		case "1":
+			sendServerRequest(serverURL, portNumber, "random")
+
 		case "R", "r":
 			sendServerRequest(serverURL, portNumber, "play-rock")
 
