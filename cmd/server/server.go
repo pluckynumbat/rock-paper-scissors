@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/pluckynumbat/rock-paper-scissors/engine"
@@ -14,7 +15,7 @@ func main() {
 	http.HandleFunc("/play-rock", playRockAgainstServer)
 	http.HandleFunc("/play-paper", playPaperAgainstServer)
 	http.HandleFunc("/play-scissors", playScissorsAgainstServer)
-	http.ListenAndServe(":8080", nil)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func playRandomGame(w http.ResponseWriter, req *http.Request) {
