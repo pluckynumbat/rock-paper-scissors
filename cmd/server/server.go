@@ -21,22 +21,26 @@ func main() {
 }
 
 func playRandomGame(w http.ResponseWriter, req *http.Request) {
+	result := ""
+
 	p1 := &engine.Player{Name: "Player 1"}
 	p1.ChooseRandom()
 	fmt.Printf(" %v:%v ", p1.String(), p1.PrintChoice())
-	fmt.Fprintf(w, "%v chose %v\n", p1.String(), p1.PrintChoice())
+	result += fmt.Sprintf("%v chose %v\n", p1.String(), p1.PrintChoice())
 
 	p2 := &engine.Player{Name: "Player 2"}
 	p2.ChooseRandom()
 	fmt.Printf(" %v:%v ", p2.String(), p2.PrintChoice())
-	fmt.Fprintf(w, "%v chose %v\n", p2.String(), p2.PrintChoice())
+	result += fmt.Sprintf("%v chose %v\n", p2.String(), p2.PrintChoice())
 
 	win, err := engine.Play(p1, p2)
-	if err != nil {
-		fmt.Printf("error: %v", err)
+	if err == nil {
+		fmt.Printf("error: %v\n", err)
+		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
 	} else {
 		fmt.Printf(" Win: %v\n", win.String())
-		fmt.Fprintf(w, "%v Won!\n", win.String())
+		result += fmt.Sprintf("%v Won!\n", win.String())
+		fmt.Fprintf(w, result)
 	}
 }
 
