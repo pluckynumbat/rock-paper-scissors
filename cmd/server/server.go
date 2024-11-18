@@ -10,9 +10,9 @@ import (
 
 const internalServerErrorMsg string = "error: internal server error"
 
-type gameServer struct{}
+type GameServer struct{}
 
-func (gs *gameServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (gs *GameServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	endpoint := req.URL.Path
 	switch endpoint {
@@ -39,7 +39,7 @@ func (gs *gameServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 	fmt.Println("running the rock-paper-server...")
-	log.Fatal(http.ListenAndServe(":8080", &gameServer{}))
+	log.Fatal(http.ListenAndServe(":8080", &GameServer{}))
 }
 
 func playRandomGame(w http.ResponseWriter, req *http.Request) {
