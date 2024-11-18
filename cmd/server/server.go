@@ -92,30 +92,6 @@ func createPlayerWithFixedChoice(name string, ch engine.Choice) *engine.Player {
 	return player
 }
 
-func playChoiceAgainstServer(ch engine.Choice) (string, error) {
-	if ch.String() == "None" {
-		return "", fmt.Errorf("Invalid choice")
-	}
-
-	p1 := createPlayerWithFixedChoice("You", ch)
-	fmt.Printf(" Player:%v ", p1.PrintChoice())
-	result := fmt.Sprintf("%v chose %v\n", p1.String(), p1.PrintChoice())
-
-	p2 := createPlayerWithRandomChoice("Server")
-	fmt.Printf(" Server:%v ", p2.PrintChoice())
-	result += fmt.Sprintf("%v chose %v\n", p2.String(), p2.PrintChoice())
-
-	win, err := engine.Play(p1, p2)
-	if err != nil {
-		fmt.Printf("error: %v", err)
-	} else {
-		fmt.Printf(" Win: %v\n", win.String())
-		result += fmt.Sprintf("%v Won!\n", win.String())
-	}
-
-	return result, nil
-}
-
 func printChoicesAndPlay(p1, p2 *engine.Player) (string, error) {
 	if p1.PrintChoice() == "None" {
 		return "", fmt.Errorf("Invalid choice for %v", p1.String())
