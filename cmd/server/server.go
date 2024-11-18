@@ -10,97 +10,110 @@ import (
 
 const internalServerErrorMsg string = "error: internal server error"
 
+type GameServer struct{}
+
+func (gs *GameServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+
+	serverPlayer := createPlayerWithRandomChoice("Server")
+
+	result := ""
+	var err error
+	endpoint := req.URL.Path
+	switch endpoint {
+	case "/play-random":
+		result, err = playRandomAgainstServer(serverPlayer)
+	case "/play-rock":
+		result, err = playRockAgainstServer(serverPlayer)
+	case "/play-paper":
+		result, err = playPaperAgainstServer(serverPlayer)
+	case "/play-scissors":
+		result, err = playScissorsAgainstServer(serverPlayer)
+	}
+
+	if err != nil {
+		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
+	} else {
+		fmt.Fprint(w, result)
+	}
+}
+
 func main() {
 	fmt.Println("running the rock-paper-server...")
-
-	http.HandleFunc("/random", playRandomGame)
-	http.HandleFunc("/play-rock", playRockAgainstServer)
-	http.HandleFunc("/play-paper", playPaperAgainstServer)
-	http.HandleFunc("/play-scissors", playScissorsAgainstServer)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", &GameServer{}))
 }
 
-func playRandomGame(w http.ResponseWriter, req *http.Request) {
-	result := ""
+func playRandomAgainstServer(serverPlayer *engine.Player) (string, error) {
 
-	p1 := &engine.Player{Name: "Player 1"}
-	p1.ChooseRandom()
-	fmt.Printf(" %v:%v ", p1.String(), p1.PrintChoice())
-	result += fmt.Sprintf("%v chose %v\n", p1.String(), p1.PrintChoice())
-
-	p2 := &engine.Player{Name: "Player 2"}
-	p2.ChooseRandom()
-	fmt.Printf(" %v:%v ", p2.String(), p2.PrintChoice())
-	result += fmt.Sprintf("%v chose %v\n", p2.String(), p2.PrintChoice())
-
-	win, err := engine.Play(p1, p2)
+	result, err := printChoicesAndPlay(createPlayerWithRandomChoice("You"), serverPlayer)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
-		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
-	} else {
-		fmt.Printf(" Win: %v\n", win.String())
-		result += fmt.Sprintf("%v Won!\n", win.String())
-		fmt.Fprintf(w, result)
+		return "", err
 	}
+	return result, nil
 }
 
-func playRockAgainstServer(w http.ResponseWriter, req *http.Request) {
-	result, err := playAgainstServer(createPlayerFromChoice(engine.Rock))
+func playRockAgainstServer(serverPlayer *engine.Player) (string, error) {
+
+	result, err := printChoicesAndPlay(createPlayerWithFixedChoice("You", engine.Rock), serverPlayer)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
-		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
-	} else {
-		fmt.Fprintf(w, result)
+		return "", err
 	}
+	return result, nil
 }
 
-func playPaperAgainstServer(w http.ResponseWriter, req *http.Request) {
-
-	result, err := playAgainstServer(createPlayerFromChoice(engine.Paper))
+func playPaperAgainstServer(serverPlayer *engine.Player) (string, error) {
+	result, err := printChoicesAndPlay(createPlayerWithFixedChoice("You", engine.Paper), serverPlayer)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
-		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
-	} else {
-		fmt.Fprintf(w, result)
+		return "", err
 	}
+	return result, nil
 }
 
-func playScissorsAgainstServer(w http.ResponseWriter, req *http.Request) {
-
-	result, err := playAgainstServer(createPlayerFromChoice(engine.Scissors))
+func playScissorsAgainstServer(serverPlayer *engine.Player) (string, error) {
+	result, err := printChoicesAndPlay(createPlayerWithFixedChoice("You", engine.Scissors), serverPlayer)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
-		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
-	} else {
-		fmt.Fprintf(w, result)
+		return "", err
 	}
+	return result, nil
 }
 
-func createPlayerFromChoice(ch engine.Choice) *engine.Player {
-	player := &engine.Player{Name: "You"}
+func createPlayerWithRandomChoice(name string) *engine.Player {
+	player := &engine.Player{Name: name}
+	player.ChooseRandom()
+	return player
+}
+
+func createPlayerWithFixedChoice(name string, ch engine.Choice) *engine.Player {
+	player := &engine.Player{Name: name}
 	player.ChooseFixed(ch)
 	return player
 }
 
-func playAgainstServer(p1 *engine.Player) (string, error) {
+func printChoicesAndPlay(p1, p2 *engine.Player) (string, error) {
 	if p1.PrintChoice() == "None" {
-		return "", fmt.Errorf("Invalid choice")
+		return "", fmt.Errorf("Invalid choice for %v", p1.String())
 	}
-	fmt.Printf(" Player:%v ", p1.PrintChoice())
+
+	if p2.PrintChoice() == "None" {
+		return "", fmt.Errorf("Invalid choice for %v", p2.String())
+	}
+
+	fmt.Printf(" %v:%v ", p1.String(), p1.PrintChoice())
 	result := fmt.Sprintf("%v chose %v\n", p1.String(), p1.PrintChoice())
 
-	p2 := &engine.Player{Name: "Server"}
-	p2.ChooseRandom()
 	fmt.Printf(" %v:%v ", p2.String(), p2.PrintChoice())
 	result += fmt.Sprintf("%v chose %v\n", p2.String(), p2.PrintChoice())
 
 	win, err := engine.Play(p1, p2)
 	if err != nil {
 		fmt.Printf("error: %v", err)
-	} else {
-		fmt.Printf(" Win: %v\n", win.String())
-		result += fmt.Sprintf("%v Won!\n", win.String())
+		return "", err
 	}
 
+	fmt.Printf(" Win: %v\n", win.String())
+	result += fmt.Sprintf("%v Won!\n", win.String())
 	return result, nil
 }
