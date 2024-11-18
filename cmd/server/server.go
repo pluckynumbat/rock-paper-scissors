@@ -65,8 +65,9 @@ func playRandomGame() (string, error) {
 	return result, nil
 }
 
-func playRockAgainstServer() (string, error) {
-	result, err := playChoiceAgainstServer(engine.Rock)
+func playRandomAgainstServer(serverPlayer *engine.Player) (string, error) {
+
+	result, err := printChoicesAndPlay(createPlayerWithRandomChoice("You"), serverPlayer)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
 		return "", err
@@ -74,8 +75,9 @@ func playRockAgainstServer() (string, error) {
 	return result, nil
 }
 
-func playPaperAgainstServer() (string, error) {
-	result, err := playChoiceAgainstServer(engine.Paper)
+func playRockAgainstServer(serverPlayer *engine.Player) (string, error) {
+
+	result, err := printChoicesAndPlay(createPlayerWithFixedChoice("You", engine.Rock), serverPlayer)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
 		return "", err
@@ -83,8 +85,17 @@ func playPaperAgainstServer() (string, error) {
 	return result, nil
 }
 
-func playScissorsAgainstServer() (string, error) {
-	result, err := playChoiceAgainstServer(engine.Scissors)
+func playPaperAgainstServer(serverPlayer *engine.Player) (string, error) {
+	result, err := printChoicesAndPlay(createPlayerWithFixedChoice("You", engine.Paper), serverPlayer)
+	if err != nil {
+		fmt.Printf("error: %v\n", err)
+		return "", err
+	}
+	return result, nil
+}
+
+func playScissorsAgainstServer(serverPlayer *engine.Player) (string, error) {
+	result, err := printChoicesAndPlay(createPlayerWithFixedChoice("You", engine.Scissors), serverPlayer)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
 		return "", err
