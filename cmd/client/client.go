@@ -28,7 +28,7 @@ func main() {
 	option := ""
 	for {
 		fmt.Println("Options:")
-		fmt.Println("Press 1 to play a random game")
+		fmt.Println("Press 1 to play a random choice against the server")
 		fmt.Println("Press 'R' or 'r' to play Rock against the server")
 		fmt.Println("Press 'P' or 'p' to play Paper against the server")
 		fmt.Println("Press 'S' or 's' to play Scissors against the server")
@@ -42,7 +42,7 @@ func main() {
 
 		switch option {
 		case "1":
-			sendServerRequest(serverURL, portNumber, "random")
+			sendServerRequest(serverURL, portNumber, "play-random")
 
 		case "R", "r":
 			sendServerRequest(serverURL, portNumber, "play-rock")
