@@ -138,3 +138,29 @@ func playChoiceAgainstServer(ch engine.Choice) (string, error) {
 
 	return result, nil
 }
+
+func printChoicesAndPlay(p1, p2 *engine.Player) (string, error) {
+	if p1.PrintChoice() == "None" {
+		return "", fmt.Errorf("Invalid choice for %v", p1.String())
+	}
+
+	if p2.PrintChoice() == "None" {
+		return "", fmt.Errorf("Invalid choice for %v", p2.String())
+	}
+
+	fmt.Printf(" %v:%v ", p1.String(), p1.PrintChoice())
+	result := fmt.Sprintf("%v chose %v\n", p1.String(), p1.PrintChoice())
+
+	fmt.Printf(" %v:%v ", p2.String(), p2.PrintChoice())
+	result += fmt.Sprintf("%v chose %v\n", p2.String(), p2.PrintChoice())
+
+	win, err := engine.Play(p1, p2)
+	if err != nil {
+		fmt.Printf("error: %v", err)
+		return "", err
+	}
+
+	fmt.Printf(" Win: %v\n", win.String())
+	result += fmt.Sprintf("%v Won!\n", win.String())
+	return result, nil
+}
