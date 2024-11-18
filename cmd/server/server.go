@@ -30,10 +30,20 @@ func (gs *GameServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		} else {
 			fmt.Fprint(w, result)
 		}
-	case "play-paper":
-		playPaperAgainstServer(w, req)
+	case "/play-paper":
+		result, err := playPaperAgainstServer()
+		if err != nil {
+			http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
+		} else {
+			fmt.Fprint(w, result)
+		}
 	case "/play-scissors":
-		playScissorsAgainstServer(w, req)
+		result, err := playScissorsAgainstServer()
+		if err != nil {
+			http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
+		} else {
+			fmt.Fprint(w, result)
+		}
 	}
 }
 
@@ -65,36 +75,31 @@ func playRandomGame() (string, error) {
 	return result, nil
 }
 
-func playRockAgainstServer(w http.ResponseWriter, req *http.Request) {
+func playRockAgainstServer() (string, error) {
 	result, err := playChoiceAgainstServer(engine.Rock)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
-		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
-	} else {
-		fmt.Fprintf(w, result)
+		return "", err
 	}
+	return result, nil
 }
 
-func playPaperAgainstServer(w http.ResponseWriter, req *http.Request) {
-
+func playPaperAgainstServer() (string, error) {
 	result, err := playChoiceAgainstServer(engine.Paper)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
-		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
-	} else {
-		fmt.Fprintf(w, result)
+		return "", err
 	}
+	return result, nil
 }
 
-func playScissorsAgainstServer(w http.ResponseWriter, req *http.Request) {
-
+func playScissorsAgainstServer() (string, error) {
 	result, err := playChoiceAgainstServer(engine.Scissors)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
-		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
-	} else {
-		fmt.Fprintf(w, result)
+		return "", err
 	}
+	return result, nil
 }
 
 func createPlayerWithRandomChoice(name string) *engine.Player {
