@@ -14,36 +14,26 @@ type GameServer struct{}
 
 func (gs *GameServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
+	serverPlayer := createPlayerWithRandomChoice("Server")
+
+	result := ""
+	var err error
 	endpoint := req.URL.Path
 	switch endpoint {
 	case "/random":
-		result, err := playRandomGame()
-		if err != nil {
-			http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
-		} else {
-			fmt.Fprint(w, result)
-		}
+		result, err = playRandomAgainstServer(serverPlayer)
 	case "/play-rock":
-		result, err := playRockAgainstServer()
-		if err != nil {
-			http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
-		} else {
-			fmt.Fprint(w, result)
-		}
+		result, err = playRockAgainstServer(serverPlayer)
 	case "/play-paper":
-		result, err := playPaperAgainstServer()
-		if err != nil {
-			http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
-		} else {
-			fmt.Fprint(w, result)
-		}
+		result, err = playPaperAgainstServer(serverPlayer)
 	case "/play-scissors":
-		result, err := playScissorsAgainstServer()
-		if err != nil {
-			http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
-		} else {
-			fmt.Fprint(w, result)
-		}
+		result, err = playScissorsAgainstServer(serverPlayer)
+	}
+
+	if err != nil {
+		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
+	} else {
+		fmt.Fprint(w, result)
 	}
 }
 
