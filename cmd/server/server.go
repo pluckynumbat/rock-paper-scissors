@@ -32,7 +32,7 @@ func playRandomGame(w http.ResponseWriter, req *http.Request) {
 	result += fmt.Sprintf("%v chose %v\n", p2.String(), p2.PrintChoice())
 
 	win, err := engine.Play(p1, p2)
-	if err == nil {
+	if err != nil {
 		fmt.Printf("error: %v\n", err)
 		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
 	} else {
