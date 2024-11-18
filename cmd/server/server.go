@@ -76,8 +76,14 @@ func playScissorsAgainstServer(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func createPlayerFromChoice(ch engine.Choice) *engine.Player {
-	player := &engine.Player{Name: "You"}
+func createPlayerWithRandomChoice(name string) *engine.Player {
+	player := &engine.Player{Name: name}
+	player.ChooseRandom()
+	return player
+}
+
+func createPlayerWithFixedChoice(name string, ch engine.Choice) *engine.Player {
+	player := &engine.Player{Name: name}
 	player.ChooseFixed(ch)
 	return player
 }
