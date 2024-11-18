@@ -42,7 +42,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", &GameServer{}))
 }
 
-func playRandomGame(w http.ResponseWriter, req *http.Request) {
+func playRandomGame() (string, error) {
 	result := ""
 
 	p1 := createPlayerWithRandomChoice("Player 1")
@@ -56,12 +56,13 @@ func playRandomGame(w http.ResponseWriter, req *http.Request) {
 	win, err := engine.Play(p1, p2)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
-		http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
+		return "", err
 	} else {
 		fmt.Printf(" Win: %v\n", win.String())
 		result += fmt.Sprintf("%v Won!\n", win.String())
-		fmt.Fprintf(w, result)
 	}
+
+	return result, nil
 }
 
 func playRockAgainstServer(w http.ResponseWriter, req *http.Request) {
