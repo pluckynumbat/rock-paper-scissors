@@ -10,14 +10,36 @@ import (
 
 const internalServerErrorMsg string = "error: internal server error"
 
+type gameServer struct{}
+
+func (gs *gameServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+
+	endpoint := req.URL.Path
+	switch endpoint {
+	case "/random":
+		result, err := playRandomGame()
+		if err != nil {
+			http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
+		} else {
+			fmt.Fprint(w, result)
+		}
+	case "/play-rock":
+		result, err := playRockAgainstServer()
+		if err != nil {
+			http.Error(w, internalServerErrorMsg, http.StatusInternalServerError)
+		} else {
+			fmt.Fprint(w, result)
+		}
+	case "play-paper":
+		playPaperAgainstServer(w, req)
+	case "/play-scissors":
+		playScissorsAgainstServer(w, req)
+	}
+}
+
 func main() {
 	fmt.Println("running the rock-paper-server...")
-
-	http.HandleFunc("/random", playRandomGame)
-	http.HandleFunc("/play-rock", playRockAgainstServer)
-	http.HandleFunc("/play-paper", playPaperAgainstServer)
-	http.HandleFunc("/play-scissors", playScissorsAgainstServer)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", &gameServer{}))
 }
 
 func playRandomGame(w http.ResponseWriter, req *http.Request) {
