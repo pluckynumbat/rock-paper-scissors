@@ -50,7 +50,7 @@ func (gs *GameServer) createServerPlayer() *engine.Player {
 
 func main() {
 	fmt.Println("running the rock-paper-server...")
-	log.Fatal(http.ListenAndServe(":8080", &GameServer{}))
+	log.Fatal(http.ListenAndServe(":8080", &GameServer{engine.None}))
 }
 
 func playRandomAgainstServer(serverPlayer *engine.Player) (string, error) {
