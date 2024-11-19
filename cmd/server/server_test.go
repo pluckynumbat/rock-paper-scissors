@@ -62,5 +62,26 @@ func TestCreateServerPlayer(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("fixed choice none", func(t *testing.T) {
+
+		gameServer.fixedChoice = engine.None
+		serverPlayer := gameServer.createServerPlayer()
+
+		choiceString := serverPlayer.PrintChoice()
+		options := []engine.Choice{engine.Rock, engine.Paper, engine.Scissors}
+
+		found := false
+		for _, val := range options {
+			if choiceString == val.String() {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			t.Errorf("Created Server Player has incorrect choice, wanted: %v or %v or %v,  got: %v", engine.Rock.String(), engine.Paper.String(), engine.Scissors.String(), choiceString)
+		}
+	})
 }
 
