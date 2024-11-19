@@ -10,11 +10,13 @@ import (
 
 const internalServerErrorMsg string = "error: internal server error"
 
-type GameServer struct{}
+type GameServer struct {
+	fixedChoice engine.Choice // should be engine.None unless testing something specific
+}
 
 func (gs *GameServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
-	serverPlayer := createPlayerWithRandomChoice("Server")
+	serverPlayer := gs.createServerPlayer()
 
 	result := ""
 	var err error
@@ -37,9 +39,18 @@ func (gs *GameServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func (gs *GameServer) createServerPlayer() *engine.Player {
+	serverName := "Server"
+	if gs.fixedChoice == engine.None {
+		return createPlayerWithRandomChoice(serverName)
+	}
+
+	return createPlayerWithFixedChoice(serverName, gs.fixedChoice)
+}
+
 func main() {
 	fmt.Println("running the rock-paper-server...")
-	log.Fatal(http.ListenAndServe(":8080", &GameServer{}))
+	log.Fatal(http.ListenAndServe(":8080", &GameServer{engine.None}))
 }
 
 func playRandomAgainstServer(serverPlayer *engine.Player) (string, error) {
