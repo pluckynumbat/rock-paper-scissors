@@ -16,7 +16,7 @@ type GameServer struct {
 
 func (gs *GameServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
-	serverPlayer := createPlayerWithRandomChoice("Server")
+	serverPlayer := gs.createServerPlayer()
 
 	result := ""
 	var err error
@@ -37,6 +37,15 @@ func (gs *GameServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	} else {
 		fmt.Fprint(w, result)
 	}
+}
+
+func (gs *GameServer) createServerPlayer() *engine.Player {
+	serverName := "Server"
+	if gs.fixedChoice == engine.None {
+		return createPlayerWithRandomChoice(serverName)
+	}
+
+	return createPlayerWithFixedChoice(serverName, gs.fixedChoice)
 }
 
 func main() {
