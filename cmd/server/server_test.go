@@ -36,3 +36,31 @@ func TestCreatePlayerWithFixedChoice(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateServerPlayer(t *testing.T) {
+	gameServer := &GameServer{}
+
+	var tests = []struct {
+		name         string
+		serverChoice engine.Choice
+	}{
+		{"fixed choice rock", engine.Rock},
+		{"fixed choice paper", engine.Paper},
+		{"fixed choice scissors", engine.Scissors},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			gameServer.fixedChoice = test.serverChoice
+			serverPlayer := gameServer.createServerPlayer()
+
+			want := test.serverChoice.String()
+			got := serverPlayer.PrintChoice()
+			if want != got {
+				t.Errorf("Created Server Player has incorrect choice, want: %v, got %v", want, got)
+			}
+		})
+	}
+}
+
