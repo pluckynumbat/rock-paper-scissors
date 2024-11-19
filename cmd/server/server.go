@@ -10,7 +10,9 @@ import (
 
 const internalServerErrorMsg string = "error: internal server error"
 
-type GameServer struct{}
+type GameServer struct {
+	fixedChoice engine.Choice // should be engine.None unless testing something specific
+}
 
 func (gs *GameServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
