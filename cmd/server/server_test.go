@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/pluckynumbat/rock-paper-scissors/engine"
@@ -83,5 +85,26 @@ func TestCreateServerPlayer(t *testing.T) {
 			t.Errorf("Created Server Player has incorrect choice, wanted: %v or %v or %v,  got: %v", engine.Rock.String(), engine.Paper.String(), engine.Scissors.String(), choiceString)
 		}
 	})
+}
+
+func TestPlayRockHandler(t *testing.T) {
+
+	newReq, err := http.NewRequest(http.MethodGet, "/play-rock", nil)
+	if err != nil {
+		t.Fatalf("new request failed with error: %v", err)
+	}
+
+	newResp := httptest.NewRecorder()
+
+	//server plays rock as well
+	gameServer := &GameServer{engine.Rock}
+	gameServer.ServeHTTP(newResp, newReq)
+
+	want := "You chose Rock\nServer chose Rock\nNo One Won!\n"
+	got := newResp.Body.String()
+
+	if got != want {
+		t.Errorf("play rock against server rock gave incorrect results, want: %v, got: %v", want, got)
+	}
 }
 
