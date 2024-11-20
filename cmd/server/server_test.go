@@ -89,6 +89,11 @@ func TestCreateServerPlayer(t *testing.T) {
 
 func TestPlayRockHandler(t *testing.T) {
 
+	gameServer := &GameServer{}
+
+	//server plays rock as well
+	gameServer.fixedChoice = engine.Rock
+
 	newReq, err := http.NewRequest(http.MethodGet, "/play-rock", nil)
 	if err != nil {
 		t.Fatalf("new request failed with error: %v", err)
@@ -96,8 +101,6 @@ func TestPlayRockHandler(t *testing.T) {
 
 	newResp := httptest.NewRecorder()
 
-	//server plays rock as well
-	gameServer := &GameServer{engine.Rock}
 	gameServer.ServeHTTP(newResp, newReq)
 
 	want := "You chose Rock\nServer chose Rock\nNo One Won!\n"
@@ -106,5 +109,25 @@ func TestPlayRockHandler(t *testing.T) {
 	if got != want {
 		t.Errorf("play rock against server rock gave incorrect results, want: %v, got: %v", want, got)
 	}
+
+	//server plays rock as well
+	gameServer.fixedChoice = engine.Paper
+
+	newReq, err = http.NewRequest(http.MethodGet, "/play-rock", nil)
+	if err != nil {
+		t.Fatalf("new request failed with error: %v", err)
+	}
+
+	newResp = httptest.NewRecorder()
+
+	gameServer.ServeHTTP(newResp, newReq)
+
+	want = "You chose Rock\nServer chose Paper\nServer Won!\n"
+	got = newResp.Body.String()
+
+	if got != want {
+		t.Errorf("play rock against server rock gave incorrect results, want: %v, got: %v", want, got)
+	}
+
 }
 
