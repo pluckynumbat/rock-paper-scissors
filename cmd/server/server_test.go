@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/pluckynumbat/rock-paper-scissors/engine"
@@ -85,3 +87,74 @@ func TestCreateServerPlayer(t *testing.T) {
 	})
 }
 
+func TestPlayRockHandler(t *testing.T) {
+
+	gameServer := &GameServer{}
+
+	var tests = []struct {
+		name         string
+		serverChoice engine.Choice
+		want         string
+	}{
+		{"server plays rock", engine.Rock, "You chose Rock\nServer chose Rock\nNo One Won!\n"},
+		{"server plays paper", engine.Paper, "You chose Rock\nServer chose Paper\nServer Won!\n"},
+		{"server plays scissors", engine.Scissors, "You chose Rock\nServer chose Scissors\nYou Won!\n"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			gameServer.fixedChoice = test.serverChoice
+
+			newReq, err := http.NewRequest(http.MethodGet, "/play-rock", nil)
+			if err != nil {
+				t.Fatalf("new request failed with error: %v", err)
+			}
+
+			newResp := httptest.NewRecorder()
+
+			gameServer.ServeHTTP(newResp, newReq)
+
+			want := test.want
+			got := newResp.Body.String()
+
+			if got != want {
+				t.Errorf("play rock against server rock gave incorrect results, want: %v, got: %v", want, got)
+			}
+		})
+	}
+}
+
+func TestPlayRockAgainstServerFunction(t *testing.T) {
+
+	gameServer := &GameServer{}
+
+	var tests = []struct {
+		name         string
+		serverChoice engine.Choice
+		want         string
+	}{
+		{"server rock", engine.Rock, "You chose Rock\nServer chose Rock\nNo One Won!\n"},
+		{"server paper", engine.Paper, "You chose Rock\nServer chose Paper\nServer Won!\n"},
+		{"server scissors", engine.Scissors, "You chose Rock\nServer chose Scissors\nYou Won!\n"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			gameServer.fixedChoice = test.serverChoice
+			serverPlayer := gameServer.createServerPlayer()
+
+			want := test.want
+			got, err := playRockAgainstServer(serverPlayer)
+
+			if err != nil {
+				t.Errorf("playRockAgainstServer failed with error: %v", err)
+			}
+
+			if want != got {
+				t.Errorf("playRockAgainstServer has incorrect results, want: %v, got: %v", want, got)
+			}
+		})
+	}
+}
