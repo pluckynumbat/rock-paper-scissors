@@ -196,3 +196,37 @@ func TestPlayRockAgainstServerFunction(t *testing.T) {
 		})
 	}
 }
+
+func TestPlayPaperAgainstServerFunction(t *testing.T) {
+
+	gameServer := &GameServer{}
+
+	var tests = []struct {
+		name         string
+		serverChoice engine.Choice
+		want         string
+	}{
+		{"server rock", engine.Rock, "You chose Paper\nServer chose Rock\nYou Won!\n"},
+		{"server paper", engine.Paper, "You chose Paper\nServer chose Paper\nNo One Won!\n"},
+		{"server scissors", engine.Scissors, "You chose Paper\nServer chose Scissors\nServer Won!\n"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			gameServer.fixedChoice = test.serverChoice
+			serverPlayer := gameServer.createServerPlayer()
+
+			want := test.want
+			got, err := playPaperAgainstServer(serverPlayer)
+
+			if err != nil {
+				t.Errorf("playPaperAgainstServer failed with error: %v", err)
+			}
+
+			if want != got {
+				t.Errorf("playPaperAgainstServer has incorrect results, want: %v, got: %v", want, got)
+			}
+		})
+	}
+}
