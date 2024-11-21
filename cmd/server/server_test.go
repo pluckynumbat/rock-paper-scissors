@@ -119,7 +119,83 @@ func TestPlayRockHandler(t *testing.T) {
 			got := newResp.Body.String()
 
 			if got != want {
-				t.Errorf("play rock against server rock gave incorrect results, want: %v, got: %v", want, got)
+				t.Errorf("play-rock handler gave incorrect results, want: %v, got: %v", want, got)
+			}
+		})
+	}
+}
+
+func TestPlayPaperHandler(t *testing.T) {
+
+	gameServer := &GameServer{}
+
+	var tests = []struct {
+		name         string
+		serverChoice engine.Choice
+		want         string
+	}{
+		{"server plays rock", engine.Rock, "You chose Paper\nServer chose Rock\nYou Won!\n"},
+		{"server plays paper", engine.Paper, "You chose Paper\nServer chose Paper\nNo One Won!\n"},
+		{"server plays scissors", engine.Scissors, "You chose Paper\nServer chose Scissors\nServer Won!\n"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			gameServer.fixedChoice = test.serverChoice
+
+			newReq, err := http.NewRequest(http.MethodGet, "/play-paper", nil)
+			if err != nil {
+				t.Fatalf("new request failed with error: %v", err)
+			}
+
+			newResp := httptest.NewRecorder()
+
+			gameServer.ServeHTTP(newResp, newReq)
+
+			want := test.want
+			got := newResp.Body.String()
+
+			if got != want {
+				t.Errorf("play-paper handler gave incorrect results, want: %v, got: %v", want, got)
+			}
+		})
+	}
+}
+
+func TestPlayScissorsHandler(t *testing.T) {
+
+	gameServer := &GameServer{}
+
+	var tests = []struct {
+		name         string
+		serverChoice engine.Choice
+		want         string
+	}{
+		{"server plays rock", engine.Rock, "You chose Scissors\nServer chose Rock\nServer Won!\n"},
+		{"server plays paper", engine.Paper, "You chose Scissors\nServer chose Paper\nYou Won!\n"},
+		{"server plays scissors", engine.Scissors, "You chose Scissors\nServer chose Scissors\nNo One Won!\n"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			gameServer.fixedChoice = test.serverChoice
+
+			newReq, err := http.NewRequest(http.MethodGet, "/play-scissors", nil)
+			if err != nil {
+				t.Fatalf("new request failed with error: %v", err)
+			}
+
+			newResp := httptest.NewRecorder()
+
+			gameServer.ServeHTTP(newResp, newReq)
+
+			want := test.want
+			got := newResp.Body.String()
+
+			if got != want {
+				t.Errorf("play-scissors handler gave incorrect results, want: %v, got: %v", want, got)
 			}
 		})
 	}
@@ -154,6 +230,74 @@ func TestPlayRockAgainstServerFunction(t *testing.T) {
 
 			if want != got {
 				t.Errorf("playRockAgainstServer has incorrect results, want: %v, got: %v", want, got)
+			}
+		})
+	}
+}
+
+func TestPlayPaperAgainstServerFunction(t *testing.T) {
+
+	gameServer := &GameServer{}
+
+	var tests = []struct {
+		name         string
+		serverChoice engine.Choice
+		want         string
+	}{
+		{"server rock", engine.Rock, "You chose Paper\nServer chose Rock\nYou Won!\n"},
+		{"server paper", engine.Paper, "You chose Paper\nServer chose Paper\nNo One Won!\n"},
+		{"server scissors", engine.Scissors, "You chose Paper\nServer chose Scissors\nServer Won!\n"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			gameServer.fixedChoice = test.serverChoice
+			serverPlayer := gameServer.createServerPlayer()
+
+			want := test.want
+			got, err := playPaperAgainstServer(serverPlayer)
+
+			if err != nil {
+				t.Errorf("playPaperAgainstServer failed with error: %v", err)
+			}
+
+			if want != got {
+				t.Errorf("playPaperAgainstServer has incorrect results, want: %v, got: %v", want, got)
+			}
+		})
+	}
+}
+
+func TestPlayScissorsAgainstServerFunction(t *testing.T) {
+
+	gameServer := &GameServer{}
+
+	var tests = []struct {
+		name         string
+		serverChoice engine.Choice
+		want         string
+	}{
+		{"server rock", engine.Rock, "You chose Scissors\nServer chose Rock\nServer Won!\n"},
+		{"server paper", engine.Paper, "You chose Scissors\nServer chose Paper\nYou Won!\n"},
+		{"server scissors", engine.Scissors, "You chose Scissors\nServer chose Scissors\nNo One Won!\n"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			gameServer.fixedChoice = test.serverChoice
+			serverPlayer := gameServer.createServerPlayer()
+
+			want := test.want
+			got, err := playScissorsAgainstServer(serverPlayer)
+
+			if err != nil {
+				t.Errorf("playScissorsAgainstServer failed with error: %v", err)
+			}
+
+			if want != got {
+				t.Errorf("playScissorsAgainstServer has incorrect results, want: %v, got: %v", want, got)
 			}
 		})
 	}
