@@ -119,7 +119,45 @@ func TestPlayRockHandler(t *testing.T) {
 			got := newResp.Body.String()
 
 			if got != want {
-				t.Errorf("play rock against server rock gave incorrect results, want: %v, got: %v", want, got)
+				t.Errorf("play-rock handler gave incorrect results, want: %v, got: %v", want, got)
+			}
+		})
+	}
+}
+
+func TestPlayPaperHandler(t *testing.T) {
+
+	gameServer := &GameServer{}
+
+	var tests = []struct {
+		name         string
+		serverChoice engine.Choice
+		want         string
+	}{
+		{"server plays rock", engine.Rock, "You chose Paper\nServer chose Rock\nYou Won!\n"},
+		{"server plays paper", engine.Paper, "You chose Paper\nServer chose Paper\nNo One Won!\n"},
+		{"server plays scissors", engine.Scissors, "You chose Paper\nServer chose Scissors\nServer Won!\n"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			gameServer.fixedChoice = test.serverChoice
+
+			newReq, err := http.NewRequest(http.MethodGet, "/play-paper", nil)
+			if err != nil {
+				t.Fatalf("new request failed with error: %v", err)
+			}
+
+			newResp := httptest.NewRecorder()
+
+			gameServer.ServeHTTP(newResp, newReq)
+
+			want := test.want
+			got := newResp.Body.String()
+
+			if got != want {
+				t.Errorf("play paper handler gave incorrect results, want: %v, got: %v", want, got)
 			}
 		})
 	}
