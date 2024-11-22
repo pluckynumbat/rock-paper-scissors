@@ -207,12 +207,14 @@ func TestPlayRockAgainstServerFunction(t *testing.T) {
 
 	var tests = []struct {
 		name         string
+		fn           func(*engine.Player) (string, error)
+		fnName       string
 		serverChoice engine.Choice
 		want         string
 	}{
-		{"server rock", engine.Rock, "You chose Rock\nServer chose Rock\nNo One Won!\n"},
-		{"server paper", engine.Paper, "You chose Rock\nServer chose Paper\nServer Won!\n"},
-		{"server scissors", engine.Scissors, "You chose Rock\nServer chose Scissors\nYou Won!\n"},
+		{"player-rock-server-rock", playRockAgainstServer, "playRockAgainstServer", engine.Rock, "You chose Rock\nServer chose Rock\nNo One Won!\n"},
+		{"player-rock-server-paper", playRockAgainstServer, "playRockAgainstServer", engine.Paper, "You chose Rock\nServer chose Paper\nServer Won!\n"},
+		{"player-rock-server-scissors", playRockAgainstServer, "playRockAgainstServer", engine.Scissors, "You chose Rock\nServer chose Scissors\nYou Won!\n"},
 	}
 
 	for _, test := range tests {
@@ -222,14 +224,14 @@ func TestPlayRockAgainstServerFunction(t *testing.T) {
 			serverPlayer := gameServer.createServerPlayer()
 
 			want := test.want
-			got, err := playRockAgainstServer(serverPlayer)
+			got, err := test.fn(serverPlayer)
 
 			if err != nil {
-				t.Errorf("playRockAgainstServer failed with error: %v", err)
+				t.Errorf("%v failed with error: %v", test.fnName, err)
 			}
 
 			if want != got {
-				t.Errorf("playRockAgainstServer has incorrect results, want: %v, got: %v", want, got)
+				t.Errorf("%v has incorrect results, want: %v, got: %v", test.fnName, want, got)
 			}
 		})
 	}
