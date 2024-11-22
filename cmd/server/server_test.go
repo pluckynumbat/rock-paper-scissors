@@ -201,18 +201,26 @@ func TestPlayScissorsHandler(t *testing.T) {
 	}
 }
 
-func TestPlayRockAgainstServerFunction(t *testing.T) {
+func TestPlayAgainstServerFunctions(t *testing.T) {
 
 	gameServer := &GameServer{}
 
 	var tests = []struct {
 		name         string
+		fn           func(*engine.Player) (string, error)
+		fnName       string
 		serverChoice engine.Choice
 		want         string
 	}{
-		{"server rock", engine.Rock, "You chose Rock\nServer chose Rock\nNo One Won!\n"},
-		{"server paper", engine.Paper, "You chose Rock\nServer chose Paper\nServer Won!\n"},
-		{"server scissors", engine.Scissors, "You chose Rock\nServer chose Scissors\nYou Won!\n"},
+		{"player-rock-server-rock", playRockAgainstServer, "playRockAgainstServer", engine.Rock, "You chose Rock\nServer chose Rock\nNo One Won!\n"},
+		{"player-rock-server-paper", playRockAgainstServer, "playRockAgainstServer", engine.Paper, "You chose Rock\nServer chose Paper\nServer Won!\n"},
+		{"player-rock-server-scissors", playRockAgainstServer, "playRockAgainstServer", engine.Scissors, "You chose Rock\nServer chose Scissors\nYou Won!\n"},
+		{"player-paper-server-rock", playPaperAgainstServer, "playPaperAgainstServer", engine.Rock, "You chose Paper\nServer chose Rock\nYou Won!\n"},
+		{"player-paper-server-paper", playPaperAgainstServer, "playPaperAgainstServer", engine.Paper, "You chose Paper\nServer chose Paper\nNo One Won!\n"},
+		{"player-paper-server-scissors", playPaperAgainstServer, "playPaperAgainstServer", engine.Scissors, "You chose Paper\nServer chose Scissors\nServer Won!\n"},
+		{"player-scissors-server-rock", playScissorsAgainstServer, "playScissorsAgainstServer", engine.Rock, "You chose Scissors\nServer chose Rock\nServer Won!\n"},
+		{"player-scissors-server-paper", playScissorsAgainstServer, "playScissorsAgainstServer", engine.Paper, "You chose Scissors\nServer chose Paper\nYou Won!\n"},
+		{"player-scissors-server-scissors", playScissorsAgainstServer, "playScissorsAgainstServer", engine.Scissors, "You chose Scissors\nServer chose Scissors\nNo One Won!\n"},
 	}
 
 	for _, test := range tests {
@@ -222,82 +230,14 @@ func TestPlayRockAgainstServerFunction(t *testing.T) {
 			serverPlayer := gameServer.createServerPlayer()
 
 			want := test.want
-			got, err := playRockAgainstServer(serverPlayer)
+			got, err := test.fn(serverPlayer)
 
 			if err != nil {
-				t.Errorf("playRockAgainstServer failed with error: %v", err)
+				t.Errorf("%v failed with error: %v", test.fnName, err)
 			}
 
 			if want != got {
-				t.Errorf("playRockAgainstServer has incorrect results, want: %v, got: %v", want, got)
-			}
-		})
-	}
-}
-
-func TestPlayPaperAgainstServerFunction(t *testing.T) {
-
-	gameServer := &GameServer{}
-
-	var tests = []struct {
-		name         string
-		serverChoice engine.Choice
-		want         string
-	}{
-		{"server rock", engine.Rock, "You chose Paper\nServer chose Rock\nYou Won!\n"},
-		{"server paper", engine.Paper, "You chose Paper\nServer chose Paper\nNo One Won!\n"},
-		{"server scissors", engine.Scissors, "You chose Paper\nServer chose Scissors\nServer Won!\n"},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-
-			gameServer.fixedChoice = test.serverChoice
-			serverPlayer := gameServer.createServerPlayer()
-
-			want := test.want
-			got, err := playPaperAgainstServer(serverPlayer)
-
-			if err != nil {
-				t.Errorf("playPaperAgainstServer failed with error: %v", err)
-			}
-
-			if want != got {
-				t.Errorf("playPaperAgainstServer has incorrect results, want: %v, got: %v", want, got)
-			}
-		})
-	}
-}
-
-func TestPlayScissorsAgainstServerFunction(t *testing.T) {
-
-	gameServer := &GameServer{}
-
-	var tests = []struct {
-		name         string
-		serverChoice engine.Choice
-		want         string
-	}{
-		{"server rock", engine.Rock, "You chose Scissors\nServer chose Rock\nServer Won!\n"},
-		{"server paper", engine.Paper, "You chose Scissors\nServer chose Paper\nYou Won!\n"},
-		{"server scissors", engine.Scissors, "You chose Scissors\nServer chose Scissors\nNo One Won!\n"},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-
-			gameServer.fixedChoice = test.serverChoice
-			serverPlayer := gameServer.createServerPlayer()
-
-			want := test.want
-			got, err := playScissorsAgainstServer(serverPlayer)
-
-			if err != nil {
-				t.Errorf("playScissorsAgainstServer failed with error: %v", err)
-			}
-
-			if want != got {
-				t.Errorf("playScissorsAgainstServer has incorrect results, want: %v, got: %v", want, got)
+				t.Errorf("%v has incorrect results, want: %v, got: %v", test.fnName, want, got)
 			}
 		})
 	}
