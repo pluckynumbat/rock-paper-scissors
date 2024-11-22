@@ -201,7 +201,7 @@ func TestPlayScissorsHandler(t *testing.T) {
 	}
 }
 
-func TestPlayRockAgainstServerFunction(t *testing.T) {
+func TestPlayAgainstServerFunctions(t *testing.T) {
 
 	gameServer := &GameServer{}
 
@@ -215,6 +215,9 @@ func TestPlayRockAgainstServerFunction(t *testing.T) {
 		{"player-rock-server-rock", playRockAgainstServer, "playRockAgainstServer", engine.Rock, "You chose Rock\nServer chose Rock\nNo One Won!\n"},
 		{"player-rock-server-paper", playRockAgainstServer, "playRockAgainstServer", engine.Paper, "You chose Rock\nServer chose Paper\nServer Won!\n"},
 		{"player-rock-server-scissors", playRockAgainstServer, "playRockAgainstServer", engine.Scissors, "You chose Rock\nServer chose Scissors\nYou Won!\n"},
+		{"player-paper-server-rock", playPaperAgainstServer, "playPaperAgainstServer", engine.Rock, "You chose Paper\nServer chose Rock\nYou Won!\n"},
+		{"player-paper-server-paper", playPaperAgainstServer, "playPaperAgainstServer", engine.Paper, "You chose Paper\nServer chose Paper\nNo One Won!\n"},
+		{"player-paper-server-scissors", playPaperAgainstServer, "playPaperAgainstServer", engine.Scissors, "You chose Paper\nServer chose Scissors\nServer Won!\n"},
 	}
 
 	for _, test := range tests {
