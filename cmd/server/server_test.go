@@ -87,18 +87,19 @@ func TestCreateServerPlayer(t *testing.T) {
 	})
 }
 
-func TestPlayRockHandler(t *testing.T) {
+func TestPlayChoiceHandlers(t *testing.T) {
 
 	gameServer := &GameServer{}
 
 	var tests = []struct {
 		name         string
+		endpoint     string
 		serverChoice engine.Choice
 		want         string
 	}{
-		{"server plays rock", engine.Rock, "You chose Rock\nServer chose Rock\nNo One Won!\n"},
-		{"server plays paper", engine.Paper, "You chose Rock\nServer chose Paper\nServer Won!\n"},
-		{"server plays scissors", engine.Scissors, "You chose Rock\nServer chose Scissors\nYou Won!\n"},
+		{"server plays rock", "/play-rock", engine.Rock, "You chose Rock\nServer chose Rock\nNo One Won!\n"},
+		{"server plays paper", "/play-rock", engine.Paper, "You chose Rock\nServer chose Paper\nServer Won!\n"},
+		{"server plays scissors", "/play-rock", engine.Scissors, "You chose Rock\nServer chose Scissors\nYou Won!\n"},
 	}
 
 	for _, test := range tests {
@@ -106,7 +107,7 @@ func TestPlayRockHandler(t *testing.T) {
 
 			gameServer.fixedChoice = test.serverChoice
 
-			newReq, err := http.NewRequest(http.MethodGet, "/play-rock", nil)
+			newReq, err := http.NewRequest(http.MethodGet, test.endpoint, nil)
 			if err != nil {
 				t.Fatalf("new request failed with error: %v", err)
 			}
@@ -119,7 +120,7 @@ func TestPlayRockHandler(t *testing.T) {
 			got := newResp.Body.String()
 
 			if got != want {
-				t.Errorf("play-rock handler gave incorrect results, want: %v, got: %v", want, got)
+				t.Errorf("%v handler gave incorrect results, want: %v, got: %v", test.endpoint, want, got)
 			}
 		})
 	}
