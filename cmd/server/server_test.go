@@ -87,18 +87,25 @@ func TestCreateServerPlayer(t *testing.T) {
 	})
 }
 
-func TestPlayRockHandler(t *testing.T) {
+func TestPlayChoiceHandlers(t *testing.T) {
 
 	gameServer := &GameServer{}
 
 	var tests = []struct {
 		name         string
+		endpoint     string
 		serverChoice engine.Choice
 		want         string
 	}{
-		{"server plays rock", engine.Rock, "You chose Rock\nServer chose Rock\nNo One Won!\n"},
-		{"server plays paper", engine.Paper, "You chose Rock\nServer chose Paper\nServer Won!\n"},
-		{"server plays scissors", engine.Scissors, "You chose Rock\nServer chose Scissors\nYou Won!\n"},
+		{"player plays rock, server plays rock", "/play-rock", engine.Rock, "You chose Rock\nServer chose Rock\nNo One Won!\n"},
+		{"player plays rock, server plays paper", "/play-rock", engine.Paper, "You chose Rock\nServer chose Paper\nServer Won!\n"},
+		{"player plays rock, server plays scissors", "/play-rock", engine.Scissors, "You chose Rock\nServer chose Scissors\nYou Won!\n"},
+		{"player plays paper, server plays rock", "/play-paper", engine.Rock, "You chose Paper\nServer chose Rock\nYou Won!\n"},
+		{"player plays paper, server plays paper", "/play-paper", engine.Paper, "You chose Paper\nServer chose Paper\nNo One Won!\n"},
+		{"player plays paper, server plays scissors", "/play-paper", engine.Scissors, "You chose Paper\nServer chose Scissors\nServer Won!\n"},
+		{"player plays scissors, server plays rock", "/play-scissors", engine.Rock, "You chose Scissors\nServer chose Rock\nServer Won!\n"},
+		{"player plays scissors, server plays paper", "/play-scissors", engine.Paper, "You chose Scissors\nServer chose Paper\nYou Won!\n"},
+		{"player plays scissors, server plays scissors", "/play-scissors", engine.Scissors, "You chose Scissors\nServer chose Scissors\nNo One Won!\n"},
 	}
 
 	for _, test := range tests {
@@ -106,7 +113,7 @@ func TestPlayRockHandler(t *testing.T) {
 
 			gameServer.fixedChoice = test.serverChoice
 
-			newReq, err := http.NewRequest(http.MethodGet, "/play-rock", nil)
+			newReq, err := http.NewRequest(http.MethodGet, test.endpoint, nil)
 			if err != nil {
 				t.Fatalf("new request failed with error: %v", err)
 			}
@@ -119,83 +126,7 @@ func TestPlayRockHandler(t *testing.T) {
 			got := newResp.Body.String()
 
 			if got != want {
-				t.Errorf("play-rock handler gave incorrect results, want: %v, got: %v", want, got)
-			}
-		})
-	}
-}
-
-func TestPlayPaperHandler(t *testing.T) {
-
-	gameServer := &GameServer{}
-
-	var tests = []struct {
-		name         string
-		serverChoice engine.Choice
-		want         string
-	}{
-		{"server plays rock", engine.Rock, "You chose Paper\nServer chose Rock\nYou Won!\n"},
-		{"server plays paper", engine.Paper, "You chose Paper\nServer chose Paper\nNo One Won!\n"},
-		{"server plays scissors", engine.Scissors, "You chose Paper\nServer chose Scissors\nServer Won!\n"},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-
-			gameServer.fixedChoice = test.serverChoice
-
-			newReq, err := http.NewRequest(http.MethodGet, "/play-paper", nil)
-			if err != nil {
-				t.Fatalf("new request failed with error: %v", err)
-			}
-
-			newResp := httptest.NewRecorder()
-
-			gameServer.ServeHTTP(newResp, newReq)
-
-			want := test.want
-			got := newResp.Body.String()
-
-			if got != want {
-				t.Errorf("play-paper handler gave incorrect results, want: %v, got: %v", want, got)
-			}
-		})
-	}
-}
-
-func TestPlayScissorsHandler(t *testing.T) {
-
-	gameServer := &GameServer{}
-
-	var tests = []struct {
-		name         string
-		serverChoice engine.Choice
-		want         string
-	}{
-		{"server plays rock", engine.Rock, "You chose Scissors\nServer chose Rock\nServer Won!\n"},
-		{"server plays paper", engine.Paper, "You chose Scissors\nServer chose Paper\nYou Won!\n"},
-		{"server plays scissors", engine.Scissors, "You chose Scissors\nServer chose Scissors\nNo One Won!\n"},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-
-			gameServer.fixedChoice = test.serverChoice
-
-			newReq, err := http.NewRequest(http.MethodGet, "/play-scissors", nil)
-			if err != nil {
-				t.Fatalf("new request failed with error: %v", err)
-			}
-
-			newResp := httptest.NewRecorder()
-
-			gameServer.ServeHTTP(newResp, newReq)
-
-			want := test.want
-			got := newResp.Body.String()
-
-			if got != want {
-				t.Errorf("play-scissors handler gave incorrect results, want: %v, got: %v", want, got)
+				t.Errorf("%v handler gave incorrect results, want: %v, got: %v", test.endpoint, want, got)
 			}
 		})
 	}
