@@ -103,6 +103,9 @@ func TestPlayChoiceHandlers(t *testing.T) {
 		{"player plays paper, server plays rock", "/play-paper", engine.Rock, "You chose Paper\nServer chose Rock\nYou Won!\n"},
 		{"player plays paper, server plays paper", "/play-paper", engine.Paper, "You chose Paper\nServer chose Paper\nNo One Won!\n"},
 		{"player plays paper, server plays scissors", "/play-paper", engine.Scissors, "You chose Paper\nServer chose Scissors\nServer Won!\n"},
+		{"player plays scissors, server plays rock", "/play-scissors", engine.Rock, "You chose Scissors\nServer chose Rock\nServer Won!\n"},
+		{"player plays scissors, server plays paper", "/play-scissors", engine.Paper, "You chose Scissors\nServer chose Paper\nYou Won!\n"},
+		{"player plays scissors, server plays scissors", "/play-scissors", engine.Scissors, "You chose Scissors\nServer chose Scissors\nNo One Won!\n"},
 	}
 
 	for _, test := range tests {
