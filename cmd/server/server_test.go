@@ -97,9 +97,12 @@ func TestPlayChoiceHandlers(t *testing.T) {
 		serverChoice engine.Choice
 		want         string
 	}{
-		{"server plays rock", "/play-rock", engine.Rock, "You chose Rock\nServer chose Rock\nNo One Won!\n"},
-		{"server plays paper", "/play-rock", engine.Paper, "You chose Rock\nServer chose Paper\nServer Won!\n"},
-		{"server plays scissors", "/play-rock", engine.Scissors, "You chose Rock\nServer chose Scissors\nYou Won!\n"},
+		{"player plays rock, server plays rock", "/play-rock", engine.Rock, "You chose Rock\nServer chose Rock\nNo One Won!\n"},
+		{"player plays rock, server plays paper", "/play-rock", engine.Paper, "You chose Rock\nServer chose Paper\nServer Won!\n"},
+		{"player plays rock, server plays scissors", "/play-rock", engine.Scissors, "You chose Rock\nServer chose Scissors\nYou Won!\n"},
+		{"player plays paper, server plays rock", "/play-paper", engine.Rock, "You chose Paper\nServer chose Rock\nYou Won!\n"},
+		{"player plays paper, server plays paper", "/play-paper", engine.Paper, "You chose Paper\nServer chose Paper\nNo One Won!\n"},
+		{"player plays paper, server plays scissors", "/play-paper", engine.Scissors, "You chose Paper\nServer chose Scissors\nServer Won!\n"},
 	}
 
 	for _, test := range tests {
