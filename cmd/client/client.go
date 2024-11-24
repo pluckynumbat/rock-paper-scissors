@@ -65,20 +65,19 @@ func createServerURLPrefix(serverAddr, portNumber string) string {
 	return "http://" + serverAddr + ":" + portNumber
 }
 
+func sendServerRequest(serverURL, endpoint string) (string, error) {
+	result := ""
+
+	resp, err := http.Get(serverURL + "/" + endpoint)
 	if err != nil {
-		fmt.Println("Error: ", err)
-		return
+		return result, fmt.Errorf("error in http request, error: %v", err)
 	}
 	defer resp.Body.Close()
 
-	printServerResponseDetails(resp)
-}
-
-func printServerResponseDetails(resp *http.Response) {
-	fmt.Println("Response Status: ", resp.Status)
-
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		result += fmt.Sprintln(scanner.Text())
 	}
+
+	return result, nil
 }
