@@ -71,7 +71,7 @@ func main() {
 }
 
 func sendPlayRockRequest(serverURLPrefix string) (string, error) {
-	res, err := sendServerRequest(serverURLPrefix, "/play-rock")
+	res, err := sendServerRequest(serverURLPrefix, "play-rock")
 	if err != nil {
 		return "", fmt.Errorf("Error in send play rock request: %v", err)
 	}
@@ -80,7 +80,7 @@ func sendPlayRockRequest(serverURLPrefix string) (string, error) {
 }
 
 func sendPlayPaperRequest(serverURLPrefix string) (string, error) {
-	res, err := sendServerRequest(serverURLPrefix, "/play-paper")
+	res, err := sendServerRequest(serverURLPrefix, "play-paper")
 	if err != nil {
 		return "", fmt.Errorf("Error in send play paper request: %v", err)
 	}
@@ -89,7 +89,7 @@ func sendPlayPaperRequest(serverURLPrefix string) (string, error) {
 }
 
 func sendPlayScissorsRequest(serverURLPrefix string) (string, error) {
-	res, err := sendServerRequest(serverURLPrefix, "/play-scissors")
+	res, err := sendServerRequest(serverURLPrefix, "play-scissors")
 	if err != nil {
 		return "", fmt.Errorf("Error in send play scissors request: %v", err)
 	}
@@ -98,7 +98,7 @@ func sendPlayScissorsRequest(serverURLPrefix string) (string, error) {
 }
 
 func sendPlayRandomRequest(serverURLPrefix string) (string, error) {
-	res, err := sendServerRequest(serverURLPrefix, "/play-random")
+	res, err := sendServerRequest(serverURLPrefix, "play-random")
 	if err != nil {
 		return "", fmt.Errorf("Error in send play random request: %v", err)
 	}
