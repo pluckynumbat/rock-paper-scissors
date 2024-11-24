@@ -25,6 +25,8 @@ func main() {
 		return
 	}
 
+	serverURLPrefix := createServerURLPrefix(serverURL, portNumber)
+
 	option := ""
 	for {
 		fmt.Println("Options:")
@@ -40,41 +42,87 @@ func main() {
 			return
 		}
 
+		result := ""
+
 		switch option {
 		case "1":
-			sendServerRequest(serverURL, portNumber, "play-random")
+			result, err = sendPlayRandomRequest(serverURLPrefix)
 
 		case "R", "r":
-			sendServerRequest(serverURL, portNumber, "play-rock")
+			result, err = sendPlayRockRequest(serverURLPrefix)
 
 		case "P", "p":
-			sendServerRequest(serverURL, portNumber, "play-paper")
+			result, err = sendPlayPaperRequest(serverURLPrefix)
 
 		case "S", "s":
-			sendServerRequest(serverURL, portNumber, "play-scissors")
+			result, err = sendPlayScissorsRequest(serverURLPrefix)
 
 		default:
 			return
 		}
+
+		if err != nil {
+			fmt.Printf("Error: %v", err)
+		} else {
+			fmt.Println(result)
+		}
+
 	}
 }
 
-func sendServerRequest(serverURL, portNumber, endpoint string) {
-	resp, err := http.Get("http://" + serverURL + ":" + portNumber + "/" + endpoint)
+func sendPlayRockRequest(serverURLPrefix string) (string, error) {
+	res, err := sendServerRequest(serverURLPrefix, "play-rock")
 	if err != nil {
-		fmt.Println("Error: ", err)
-		return
+		return "", fmt.Errorf("Error in send play rock request: %v", err)
+	}
+
+	return res, nil
+}
+
+func sendPlayPaperRequest(serverURLPrefix string) (string, error) {
+	res, err := sendServerRequest(serverURLPrefix, "play-paper")
+	if err != nil {
+		return "", fmt.Errorf("Error in send play paper request: %v", err)
+	}
+
+	return res, nil
+}
+
+func sendPlayScissorsRequest(serverURLPrefix string) (string, error) {
+	res, err := sendServerRequest(serverURLPrefix, "play-scissors")
+	if err != nil {
+		return "", fmt.Errorf("Error in send play scissors request: %v", err)
+	}
+
+	return res, nil
+}
+
+func sendPlayRandomRequest(serverURLPrefix string) (string, error) {
+	res, err := sendServerRequest(serverURLPrefix, "play-random")
+	if err != nil {
+		return "", fmt.Errorf("Error in send play random request: %v", err)
+	}
+
+	return res, nil
+}
+
+func createServerURLPrefix(serverAddr, portNumber string) string {
+	return "http://" + serverAddr + ":" + portNumber
+}
+
+func sendServerRequest(serverURL, endpoint string) (string, error) {
+	result := ""
+
+	resp, err := http.Get(serverURL + "/" + endpoint)
+	if err != nil {
+		return result, fmt.Errorf("error in http request, error: %v", err)
 	}
 	defer resp.Body.Close()
 
-	printServerResponseDetails(resp)
-}
-
-func printServerResponseDetails(resp *http.Response) {
-	fmt.Println("Response Status: ", resp.Status)
-
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		result += fmt.Sprintln(scanner.Text())
 	}
+
+	return result, nil
 }
