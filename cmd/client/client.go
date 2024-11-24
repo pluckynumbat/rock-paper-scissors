@@ -68,6 +68,24 @@ func sendPlayRockRequest(serverURLPrefix string) (string, error) {
 	return res, nil
 }
 
+func sendPlayPaperRequest(serverURLPrefix string) (string, error) {
+	res, err := sendServerRequest(serverURLPrefix, "/play-paper")
+	if err != nil {
+		return "", fmt.Errorf("Error in send play paper request: %v", err)
+	}
+
+	return res, nil
+}
+
+func sendPlayScissorsRequest(serverURLPrefix string) (string, error) {
+	res, err := sendServerRequest(serverURLPrefix, "/play-scissors")
+	if err != nil {
+		return "", fmt.Errorf("Error in send play scissors request: %v", err)
+	}
+
+	return res, nil
+}
+
 func createServerURLPrefix(serverAddr, portNumber string) string {
 	return "http://" + serverAddr + ":" + portNumber
 }
