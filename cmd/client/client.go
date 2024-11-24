@@ -59,8 +59,12 @@ func main() {
 	}
 }
 
-func sendServerRequest(serverURL, portNumber, endpoint string) {
-	resp, err := http.Get("http://" + serverURL + ":" + portNumber + "/" + endpoint)
+}
+
+func createServerURLPrefix(serverAddr, portNumber string) string {
+	return "http://" + serverAddr + ":" + portNumber
+}
+
 	if err != nil {
 		fmt.Println("Error: ", err)
 		return
