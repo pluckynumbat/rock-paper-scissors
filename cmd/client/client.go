@@ -25,6 +25,8 @@ func main() {
 		return
 	}
 
+	serverURLPrefix := createServerURLPrefix(serverURL, portNumber)
+
 	option := ""
 	for {
 		fmt.Println("Options:")
