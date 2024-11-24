@@ -59,6 +59,13 @@ func main() {
 	}
 }
 
+func sendPlayRockRequest(serverURLPrefix string) (string, error) {
+	res, err := sendServerRequest(serverURLPrefix, "/play-rock")
+	if err != nil {
+		return "", fmt.Errorf("Error in send play rock request: %v", err)
+	}
+
+	return res, nil
 }
 
 func createServerURLPrefix(serverAddr, portNumber string) string {
