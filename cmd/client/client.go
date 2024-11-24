@@ -42,22 +42,31 @@ func main() {
 			return
 		}
 
+		result := ""
+
 		switch option {
 		case "1":
-			sendServerRequest(serverURL, portNumber, "play-random")
+			result, err = sendPlayRandomRequest(serverURLPrefix)
 
 		case "R", "r":
-			sendServerRequest(serverURL, portNumber, "play-rock")
+			result, err = sendPlayRockRequest(serverURLPrefix)
 
 		case "P", "p":
-			sendServerRequest(serverURL, portNumber, "play-paper")
+			result, err = sendPlayPaperRequest(serverURLPrefix)
 
 		case "S", "s":
-			sendServerRequest(serverURL, portNumber, "play-scissors")
+			result, err = sendPlayScissorsRequest(serverURLPrefix)
 
 		default:
 			return
 		}
+
+		if err != nil {
+			fmt.Printf("Error: %v", err)
+		} else {
+			fmt.Println(result)
+		}
+
 	}
 }
 
