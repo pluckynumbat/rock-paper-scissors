@@ -88,6 +88,15 @@ func sendPlayScissorsRequest(serverURLPrefix string) (string, error) {
 	return res, nil
 }
 
+func sendPlayRandomRequest(serverURLPrefix string) (string, error) {
+	res, err := sendServerRequest(serverURLPrefix, "/play-random")
+	if err != nil {
+		return "", fmt.Errorf("Error in send play random request: %v", err)
+	}
+
+	return res, nil
+}
+
 func createServerURLPrefix(serverAddr, portNumber string) string {
 	return "http://" + serverAddr + ":" + portNumber
 }
