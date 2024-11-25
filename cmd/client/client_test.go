@@ -20,3 +20,21 @@ func serverWins(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "Server Wins")
 }
 
+func TestPlayRockAgainstServerRock(t *testing.T) {
+	newServer := httptest.NewServer(http.HandlerFunc(noOneWins))
+
+	result, err := sendPlayRockRequest(newServer.URL)
+	defer newServer.Close()
+
+	if err != nil {
+		t.Fatalf("http request failed. Error: %v", err)
+	}
+
+	want := "No One Wins"
+	got := strings.TrimSpace(result)
+
+	if got != want {
+		t.Errorf("incorrect results, want: %v, got: %v", want, got)
+	}
+}
+
