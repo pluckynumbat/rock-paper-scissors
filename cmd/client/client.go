@@ -29,47 +29,9 @@ func main() {
 
 	serverURLPrefix := createServerURLPrefix(serverURL, portNumber)
 
-	option := ""
-	for {
-		fmt.Println("Options:")
-		fmt.Println("Press 1 to play a random choice against the server")
-		fmt.Println("Press 'R' or 'r' to play Rock against the server")
-		fmt.Println("Press 'P' or 'p' to play Paper against the server")
-		fmt.Println("Press 'S' or 's' to play Scissors against the server")
-		fmt.Println("Press any other key to exit")
-
-		_, err = fmt.Scanln(&option)
-		if err != nil {
-			fmt.Println("Error:", err)
-			return
-		}
-
-		result := ""
-
-		switch option {
-		case "1":
-			result, err = sendPlayRandomRequest(serverURLPrefix)
-
-		case "R", "r":
-			result, err = sendPlayRockRequest(serverURLPrefix)
-
-		case "P", "p":
-			result, err = sendPlayPaperRequest(serverURLPrefix)
-
-		case "S", "s":
-			result, err = sendPlayScissorsRequest(serverURLPrefix)
-
-		default:
-			return
-		}
-
-		if err != nil {
-			fmt.Printf("Error: %v", err)
-		} else {
-			fmt.Println(result)
-		}
-
-	}
+	done := make(chan bool)
+	go runGameLoop(serverURLPrefix, done)
+	<-done
 }
 
 func runGameLoop(serverURLPrefix string, finished chan bool) {
