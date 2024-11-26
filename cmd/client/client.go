@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+const escapeString string = "exit"
+
 func main() {
 	fmt.Println("welcome to the rock-paper-client...")
 
@@ -67,6 +69,50 @@ func main() {
 			fmt.Println(result)
 		}
 
+	}
+}
+
+func provideOptions(serverURLPrefix string, currentInput string) (string, error) {
+
+	fmt.Println("Options:")
+	fmt.Println("Press 1 to play a random choice against the server")
+	fmt.Println("Press 'R' or 'r' to play Rock against the server")
+	fmt.Println("Press 'P' or 'p' to play Paper against the server")
+	fmt.Println("Press 'S' or 's' to play Scissors against the server")
+	fmt.Println("Press any other key to exit")
+
+	option := currentInput
+	if option == "" {
+		_, err := fmt.Scanln(&option)
+		if err != nil {
+			return "", fmt.Errorf("Scan Line Error %v:", err)
+		}
+	}
+
+	result := ""
+	var err error
+
+	switch option {
+	case "1":
+		result, err = sendPlayRandomRequest(serverURLPrefix)
+
+	case "R", "r":
+		result, err = sendPlayRockRequest(serverURLPrefix)
+
+	case "P", "p":
+		result, err = sendPlayPaperRequest(serverURLPrefix)
+
+	case "S", "s":
+		result, err = sendPlayScissorsRequest(serverURLPrefix)
+
+	default:
+		result = escapeString
+	}
+
+	if err != nil {
+		return "", fmt.Errorf("Request Error: %v", err)
+	} else {
+		return result, nil
 	}
 }
 
