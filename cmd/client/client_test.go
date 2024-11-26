@@ -20,6 +20,28 @@ func serverWins(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "Server Wins")
 }
 
+func randomResult(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(w, "Random Result!")
+}
+
+func TestPlayRandomRequest(t *testing.T) {
+	newServer := httptest.NewServer(http.HandlerFunc(randomResult))
+
+	result, err := sendPlayRandomRequest(newServer.URL)
+	defer newServer.Close()
+
+	if err != nil {
+		t.Fatalf("sendPlayRandomRequest failed. Error: %v", err)
+	}
+
+	want := "Random Result!"
+	got := strings.TrimSpace(result)
+
+	if got != want {
+		t.Errorf("got incorrect results, want: %v, got: %v", want, got)
+	}
+}
+
 func TestPlayRockRequest(t *testing.T) {
 	var tests = []struct {
 		name    string
