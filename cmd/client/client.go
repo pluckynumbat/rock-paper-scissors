@@ -72,6 +72,23 @@ func main() {
 	}
 }
 
+func runGameLoop(serverURLPrefix string, finished chan bool) {
+
+	for {
+		result, err := provideOptions(serverURLPrefix, "")
+		if err != nil {
+			fmt.Println(err)
+			break
+		} else if result != escapeString {
+			fmt.Println(result)
+		} else {
+			break
+		}
+	}
+
+	finished <- true
+}
+
 func provideOptions(serverURLPrefix string, currentInput string) (string, error) {
 
 	fmt.Println("Options:")
