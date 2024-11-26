@@ -20,6 +20,11 @@ func serverWins(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "Server Wins")
 }
 
+func randomResult(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(w, "Random Result!")
+}
+
+
 func TestPlayRockRequest(t *testing.T) {
 	var tests = []struct {
 		name    string
