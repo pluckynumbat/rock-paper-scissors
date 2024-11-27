@@ -73,16 +73,16 @@ func provideOptions(serverURLPrefix string, currentInput string) (string, error)
 
 	switch option {
 	case "1":
-		result, err = sendPlayRandomRequest(serverURLPrefix)
+		result, err = sendServerRequest(serverURLPrefix, "play-random")
 
 	case "R", "r":
-		result, err = sendPlayRockRequest(serverURLPrefix)
+		result, err = sendServerRequest(serverURLPrefix, "play-rock")
 
 	case "P", "p":
-		result, err = sendPlayPaperRequest(serverURLPrefix)
+		result, err = sendServerRequest(serverURLPrefix, "play-paper")
 
 	case "S", "s":
-		result, err = sendPlayScissorsRequest(serverURLPrefix)
+		result, err = sendServerRequest(serverURLPrefix, "play-scissors")
 
 	default:
 		result = escapeString
@@ -95,50 +95,14 @@ func provideOptions(serverURLPrefix string, currentInput string) (string, error)
 	}
 }
 
-func sendPlayRockRequest(serverURLPrefix string) (string, error) {
-	res, err := sendServerRequest(serverURLPrefix, "play-rock")
-	if err != nil {
-		return "", fmt.Errorf("Error in send play rock request: %v", err)
-	}
-
-	return res, nil
-}
-
-func sendPlayPaperRequest(serverURLPrefix string) (string, error) {
-	res, err := sendServerRequest(serverURLPrefix, "play-paper")
-	if err != nil {
-		return "", fmt.Errorf("Error in send play paper request: %v", err)
-	}
-
-	return res, nil
-}
-
-func sendPlayScissorsRequest(serverURLPrefix string) (string, error) {
-	res, err := sendServerRequest(serverURLPrefix, "play-scissors")
-	if err != nil {
-		return "", fmt.Errorf("Error in send play scissors request: %v", err)
-	}
-
-	return res, nil
-}
-
-func sendPlayRandomRequest(serverURLPrefix string) (string, error) {
-	res, err := sendServerRequest(serverURLPrefix, "play-random")
-	if err != nil {
-		return "", fmt.Errorf("Error in send play random request: %v", err)
-	}
-
-	return res, nil
-}
-
 func createServerURLPrefix(serverAddr, portNumber string) string {
 	return "http://" + serverAddr + ":" + portNumber
 }
 
-func sendServerRequest(serverURL, endpoint string) (string, error) {
+func sendServerRequest(serverURLPrefix, endpoint string) (string, error) {
 	result := ""
 
-	resp, err := http.Get(serverURL + "/" + endpoint)
+	resp, err := http.Get(serverURLPrefix + "/" + endpoint)
 	if err != nil {
 		return result, fmt.Errorf("error in http request, error: %v", err)
 	}
