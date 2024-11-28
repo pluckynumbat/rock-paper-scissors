@@ -53,13 +53,13 @@ func TestCreateServerURLPrefix(t *testing.T) {
 
 func TestSendServerRequest(t *testing.T) {
 
-	newServer := httptest.NewServer(http.HandlerFunc(randomResult))
-	res, err := sendServerRequest(newServer.URL, "play-random")
+	newServer := httptest.NewServer(http.HandlerFunc(testResult))
+	res, err := sendServerRequest(newServer.URL, "test")
 	if err != nil {
 		t.Fatalf("sendServerRequest failed, error: %v", err)
 	}
 
-	want := "Random Result!"
+	want := "Test Result"
 	got := strings.TrimSpace(res)
 	if got != want {
 		t.Errorf("sendServerRequest gave incorrect results, want: %v, got %v", want, got)
