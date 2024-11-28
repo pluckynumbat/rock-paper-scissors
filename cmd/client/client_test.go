@@ -109,3 +109,14 @@ func TestProvideOptionsInvalidInput(t *testing.T) {
 		})
 	}
 }
+
+func TestProvideOptionsEmptyInput(t *testing.T) {
+
+	newServer := httptest.NewServer(http.HandlerFunc(testResult))
+	_, err := provideOptions(newServer.URL, "")
+	if err == nil {
+		t.Errorf("provideOptions with blank input should have thrown an error")
+	} else {
+		fmt.Println(err)
+	}
+}
