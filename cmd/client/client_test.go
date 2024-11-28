@@ -50,16 +50,34 @@ func TestSendServerRequest(t *testing.T) {
 	}
 }
 
-func TestProvideOptions(t *testing.T) {
+func TestProvideOptionsValidInput(t *testing.T) {
 	newServer := httptest.NewServer(http.HandlerFunc(testResult))
-	res, err := provideOptions(newServer.URL, "1")
-	if err != nil {
-		t.Fatalf("sendServerRequest failed, error: %v", err)
+
+	var tests = []struct {
+		name        string
+		inputOption string
+	}{
+		{"random", "1"},
+		{"rock", "r"},
+		{"Rock", "R"},
+		{"paper", "p"},
+		{"Paper", "P"},
+		{"scissors", "s"},
+		{"Scissors", "S"},
 	}
 
-	want := "Test Result"
-	got := strings.TrimSpace(res)
-	if got != want {
-		t.Errorf("sendServerRequest gave incorrect results, want: %v, got %v", want, got)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			res, err := provideOptions(newServer.URL, test.inputOption)
+			if err != nil {
+				t.Fatalf("sendServerRequest failed, error: %v", err)
+			}
+
+			want := "Test Result"
+			got := strings.TrimSpace(res)
+			if got != want {
+				t.Errorf("sendServerRequest gave incorrect results, want: %v, got %v", want, got)
+			}
+		})
 	}
 }
