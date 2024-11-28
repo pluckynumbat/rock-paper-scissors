@@ -24,6 +24,10 @@ func randomResult(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "Random Result!")
 }
 
+func testResult(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(w, "Test Result")
+}
+
 func TestCreateServerURLPrefix(t *testing.T) {
 	var tests = []struct {
 		name       string
