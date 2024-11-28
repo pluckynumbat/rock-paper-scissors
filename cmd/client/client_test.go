@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -42,5 +44,20 @@ func TestCreateServerURLPrefix(t *testing.T) {
 				t.Errorf("got incorrect results, want: %v, got: %v", test.want, got)
 			}
 		})
+	}
+}
+
+func TestSendServerRequest(t *testing.T) {
+
+	newServer := httptest.NewServer(http.HandlerFunc(randomResult))
+	res, err := sendServerRequest(newServer.URL, "play-random")
+	if err != nil {
+		t.Fatalf("sendServerRequest failed, error: %v", err)
+	}
+
+	want := "Random Result!"
+	got := strings.TrimSpace(res)
+	if got != want {
+		t.Errorf("sendServerRequest gave incorrect results, want: %v, got %v", want, got)
 	}
 }
