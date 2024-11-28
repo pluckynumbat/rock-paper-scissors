@@ -8,22 +8,6 @@ import (
 	"testing"
 )
 
-func noOneWins(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "No One Wins")
-}
-
-func youWin(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "You Win")
-}
-
-func serverWins(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "Server Wins")
-}
-
-func randomResult(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "Random Result!")
-}
-
 func testResult(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "Test Result")
 }
