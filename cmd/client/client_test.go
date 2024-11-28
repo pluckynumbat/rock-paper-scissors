@@ -49,3 +49,17 @@ func TestSendServerRequest(t *testing.T) {
 		t.Errorf("sendServerRequest gave incorrect results, want: %v, got %v", want, got)
 	}
 }
+
+func TestProvideOptions(t *testing.T) {
+	newServer := httptest.NewServer(http.HandlerFunc(testResult))
+	res, err := provideOptions(newServer.URL, "1")
+	if err != nil {
+		t.Fatalf("sendServerRequest failed, error: %v", err)
+	}
+
+	want := "Test Result"
+	got := strings.TrimSpace(res)
+	if got != want {
+		t.Errorf("sendServerRequest gave incorrect results, want: %v, got %v", want, got)
+	}
+}
