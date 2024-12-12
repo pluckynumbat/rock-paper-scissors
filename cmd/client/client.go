@@ -98,6 +98,20 @@ func provideOptions(serverURLPrefix string, currentInput string) (string, error)
 	}
 }
 
+func getServerDataFromArgs(argSlice []string) (host, port string) {
+	host = defaultHost
+	if len(argSlice) > 0 {
+		host = argSlice[0]
+	}
+
+	port = defaultPort
+	if len(argSlice) > 1 {
+		port = argSlice[1]
+	}
+	return
+}
+
+
 func createServerURLPrefix(serverAddr, portNumber string) string {
 	return "http://" + serverAddr + ":" + portNumber
 }
