@@ -4,30 +4,24 @@ import (
 	"bufio"
 	"fmt"
 	"net/http"
+	"os"
 )
 
+const defaultHost string = "localhost"
+const defaultPort string = "8080"
 const escapeString string = "exit"
 
 func main() {
 	fmt.Println("welcome to the rock-paper-client...")
 
-	fmt.Println("Please enter the server URL: ")
-	serverURL := ""
-	_, err := fmt.Scanln(&serverURL)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
+	args := os.Args
+	baseAddr, port := getServerDataFromArgs(args[1:])
+	serverURLPrefix := createServerURLPrefix(baseAddr, port)
 
-	fmt.Println("Please enter the port number: ")
-	portNumber := ""
-	_, err = fmt.Scanln(&portNumber)
+	err := checkServerURLPrefix(serverURLPrefix)
 	if err != nil {
-		fmt.Println("Error:", err)
-		return
+		panic(err) //TODO: maybe add more graceful failure?
 	}
-
-	serverURLPrefix := createServerURLPrefix(serverURL, portNumber)
 
 	done := make(chan bool)
 	go runGameLoop(serverURLPrefix, done)
@@ -95,8 +89,32 @@ func provideOptions(serverURLPrefix string, currentInput string) (string, error)
 	}
 }
 
+func getServerDataFromArgs(argSlice []string) (host, port string) {
+	host = defaultHost
+	if len(argSlice) > 0 {
+		host = argSlice[0]
+	}
+
+	port = defaultPort
+	if len(argSlice) > 1 {
+		port = argSlice[1]
+	}
+	return
+}
+
+
 func createServerURLPrefix(serverAddr, portNumber string) string {
 	return "http://" + serverAddr + ":" + portNumber
+}
+
+func checkServerURLPrefix(serverURLPrefix string) error {
+	resp, err := http.Get(serverURLPrefix)
+	if err != nil {
+		return fmt.Errorf("error in http request, error: %v", err)
+	}
+	defer resp.Body.Close()
+
+	return nil
 }
 
 func sendServerRequest(serverURLPrefix, endpoint string) (string, error) {
