@@ -20,7 +20,7 @@ func main() {
 
 	err := checkServerURLPrefix(serverURLPrefix)
 	if err != nil {
-		panic(err)
+		panic(err) //TODO: maybe add more graceful failure?
 	}
 
 	done := make(chan bool)
