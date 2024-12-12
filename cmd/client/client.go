@@ -4,8 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"net/http"
+	"os"
 )
 
+const defaultHost string = "localhost"
+const defaultPort string = "8080"
 const escapeString string = "exit"
 
 func main() {
