@@ -14,23 +14,14 @@ const escapeString string = "exit"
 func main() {
 	fmt.Println("welcome to the rock-paper-client...")
 
-	fmt.Println("Please enter the server URL: ")
-	serverURL := ""
-	_, err := fmt.Scanln(&serverURL)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
+	args := os.Args
+	baseAddr, port := getServerDataFromArgs(args[1:])
+	serverURLPrefix := createServerURLPrefix(baseAddr, port)
 
-	fmt.Println("Please enter the port number: ")
-	portNumber := ""
-	_, err = fmt.Scanln(&portNumber)
+	err := checkServerURLPrefix(serverURLPrefix)
 	if err != nil {
-		fmt.Println("Error:", err)
-		return
+		panic(err)
 	}
-
-	serverURLPrefix := createServerURLPrefix(serverURL, portNumber)
 
 	done := make(chan bool)
 	go runGameLoop(serverURLPrefix, done)
