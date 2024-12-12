@@ -116,6 +116,16 @@ func createServerURLPrefix(serverAddr, portNumber string) string {
 	return "http://" + serverAddr + ":" + portNumber
 }
 
+func checkServerURLPrefix(serverURLPrefix string) error {
+	resp, err := http.Get(serverURLPrefix)
+	if err != nil {
+		return fmt.Errorf("error in http request, error: %v", err)
+	}
+	defer resp.Body.Close()
+
+	return nil
+}
+
 func sendServerRequest(serverURLPrefix, endpoint string) (string, error) {
 	result := ""
 
