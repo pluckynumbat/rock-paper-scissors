@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
-	"os"
 )
 
 const defaultHost string = "localhost"
@@ -86,19 +85,6 @@ func provideOptions(serverURLPrefix string, currentInput string) (string, error)
 	} else {
 		return result, nil
 	}
-}
-
-func getServerDataFromArgs(argSlice []string) (host, port string) {
-	host = defaultHost
-	if len(argSlice) > 0 {
-		host = argSlice[0]
-	}
-
-	port = defaultPort
-	if len(argSlice) > 1 {
-		port = argSlice[1]
-	}
-	return
 }
 
 func getDataFromFlags() (host, port string) {
