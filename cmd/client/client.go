@@ -16,9 +16,10 @@ func main() {
 	fmt.Println("welcome to the rock-paper-client...")
 	serverURLPrefix := createServerURLPrefix(getDataFromFlags())
 
-	err := checkServerURLPrefix(serverURLPrefix)
+	err := checkServerConnection(serverURLPrefix)
 	if err != nil {
-		panic(err) //TODO: maybe add more graceful failure?
+		fmt.Printf("test request to the server failed: %v", err)
+		return
 	}
 
 	done := make(chan bool)
@@ -111,7 +112,7 @@ func createServerURLPrefix(serverAddr, portNumber string) string {
 	return "http://" + serverAddr + ":" + portNumber
 }
 
-func checkServerURLPrefix(serverURLPrefix string) error {
+func checkServerConnection(serverURLPrefix string) error {
 	resp, err := http.Get(serverURLPrefix)
 	if err != nil {
 		return fmt.Errorf("error in http request, error: %v", err)
