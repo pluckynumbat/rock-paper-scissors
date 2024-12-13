@@ -2,9 +2,9 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"net/http"
-	"os"
 )
 
 const defaultHost string = "localhost"
@@ -13,14 +13,12 @@ const escapeString string = "exit"
 
 func main() {
 	fmt.Println("welcome to the rock-paper-client...")
+	serverURLPrefix := createServerURLPrefix(getDataFromFlags())
 
-	args := os.Args
-	baseAddr, port := getServerDataFromArgs(args[1:])
-	serverURLPrefix := createServerURLPrefix(baseAddr, port)
-
-	err := checkServerURLPrefix(serverURLPrefix)
+	err := checkServerConnection(serverURLPrefix)
 	if err != nil {
-		panic(err) //TODO: maybe add more graceful failure?
+		fmt.Printf("test request to the server failed: %v", err)
+		return
 	}
 
 	done := make(chan bool)
@@ -89,25 +87,18 @@ func provideOptions(serverURLPrefix string, currentInput string) (string, error)
 	}
 }
 
-func getServerDataFromArgs(argSlice []string) (host, port string) {
-	host = defaultHost
-	if len(argSlice) > 0 {
-		host = argSlice[0]
-	}
-
-	port = defaultPort
-	if len(argSlice) > 1 {
-		port = argSlice[1]
-	}
+func getDataFromFlags() (host, port string) {
+	flag.StringVar(&host, "host", defaultHost, "flag to specify the url of the server")
+	flag.StringVar(&port, "port", defaultPort, "flag to specify the port number on the server")
+	flag.Parse()
 	return
 }
-
 
 func createServerURLPrefix(serverAddr, portNumber string) string {
 	return "http://" + serverAddr + ":" + portNumber
 }
 
-func checkServerURLPrefix(serverURLPrefix string) error {
+func checkServerConnection(serverURLPrefix string) error {
 	resp, err := http.Get(serverURLPrefix)
 	if err != nil {
 		return fmt.Errorf("error in http request, error: %v", err)
