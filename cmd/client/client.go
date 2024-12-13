@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -102,6 +103,12 @@ func getServerDataFromArgs(argSlice []string) (host, port string) {
 	return
 }
 
+func getDataFromFlags() (host, port string) {
+	flag.StringVar(&host, "host", defaultHost, "flag to specify the url of the server")
+	flag.StringVar(&port, "port", defaultPort, "flag to specify the port number on the server")
+	flag.Parse()
+	return
+}
 
 func createServerURLPrefix(serverAddr, portNumber string) string {
 	return "http://" + serverAddr + ":" + portNumber
