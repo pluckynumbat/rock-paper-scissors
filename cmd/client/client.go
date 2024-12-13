@@ -14,10 +14,7 @@ const escapeString string = "exit"
 
 func main() {
 	fmt.Println("welcome to the rock-paper-client...")
-
-	args := os.Args
-	baseAddr, port := getServerDataFromArgs(args[1:])
-	serverURLPrefix := createServerURLPrefix(baseAddr, port)
+	serverURLPrefix := createServerURLPrefix(getDataFromFlags())
 
 	err := checkServerURLPrefix(serverURLPrefix)
 	if err != nil {
