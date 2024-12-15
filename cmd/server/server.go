@@ -130,3 +130,12 @@ func printChoicesAndPlay(p1, p2 *engine.Player) (string, error) {
 	result += fmt.Sprintf("%v Won!\n", win.String())
 	return result, nil
 }
+
+func getPortFromEnv() string {
+	envPort := os.Getenv(portEnvironmentVariable)
+	if envPort == "" {
+		fmt.Println("using default port...")
+		return defaultPort
+	}
+	return envPort
+}
