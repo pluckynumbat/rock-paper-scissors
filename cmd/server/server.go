@@ -139,3 +139,7 @@ func getPortFromEnv() string {
 	}
 	return envPort
 }
+
+func createListenAddress(host, port string) string {
+	return host + ":" + port
+}
