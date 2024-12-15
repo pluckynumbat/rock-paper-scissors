@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/pluckynumbat/rock-paper-scissors/engine"
 )
 
+const defaultPort string = "8080"
+const portEnvironmentVariable string = "ROCK_PAPER_SERVER_PORT"
 const internalServerErrorMsg string = "error: internal server error"
 
 type GameServer struct {
@@ -50,7 +53,9 @@ func (gs *GameServer) createServerPlayer() *engine.Player {
 
 func main() {
 	fmt.Println("running the rock-paper-server...")
-	log.Fatal(http.ListenAndServe(":8080", &GameServer{engine.None}))
+	port := getPortFromEnv()
+	addr := createListenAddress("", port)
+	log.Fatal(http.ListenAndServe(addr, &GameServer{engine.None}))
 }
 
 func playRandomAgainstServer(serverPlayer *engine.Player) (string, error) {
@@ -127,4 +132,17 @@ func printChoicesAndPlay(p1, p2 *engine.Player) (string, error) {
 	fmt.Printf(" Win: %v\n", win.String())
 	result += fmt.Sprintf("%v Won!\n", win.String())
 	return result, nil
+}
+
+func getPortFromEnv() string {
+	envPort := os.Getenv(portEnvironmentVariable)
+	if envPort == "" {
+		fmt.Println("using default port...")
+		return defaultPort
+	}
+	return envPort
+}
+
+func createListenAddress(host, port string) string {
+	return host + ":" + port
 }
