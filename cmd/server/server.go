@@ -8,6 +8,8 @@ import (
 	"github.com/pluckynumbat/rock-paper-scissors/engine"
 )
 
+const defaultPort string = "8080"
+const portEnvironmentVariable string = "ROCK_PAPER_SERVER_PORT"
 const internalServerErrorMsg string = "error: internal server error"
 
 type GameServer struct {
