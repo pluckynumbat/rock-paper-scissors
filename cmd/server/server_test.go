@@ -177,36 +177,6 @@ func TestPlayAgainstServerFunctions(t *testing.T) {
 
 func TestGetPortFromEnv(t *testing.T) {
 
-	want := defaultPort
-	got := getPortFromEnv()
-	if got != want {
-		t.Errorf("getPortFromEnv() has incorrect results, want: %v, got %v", want, got)
-	}
-
-	os.Setenv(portEnvironmentVariable, "8080")
-	want = defaultPort
-	got = getPortFromEnv()
-	if got != want {
-		t.Errorf("getPortFromEnv() has incorrect results, want: %v, got %v", want, got)
-	}
-
-	os.Setenv(portEnvironmentVariable, "8081")
-	want = "8081"
-	got = getPortFromEnv()
-	if got != want {
-		t.Errorf("getPortFromEnv() has incorrect results, want: %v, got %v", want, got)
-	}
-
-	os.Setenv(portEnvironmentVariable, "8082")
-	want = "8082"
-	got = getPortFromEnv()
-	if got != want {
-		t.Errorf("getPortFromEnv() has incorrect results, want: %v, got %v", want, got)
-	}
-}
-
-func TestGetPortFromEnvTableDriven(t *testing.T) {
-
 	var tests = []struct {
 		name string
 		port string
