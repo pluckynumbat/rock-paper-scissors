@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/pluckynumbat/rock-paper-scissors/engine"
@@ -169,6 +170,58 @@ func TestPlayAgainstServerFunctions(t *testing.T) {
 
 			if want != got {
 				t.Errorf("%v has incorrect results, want: %v, got: %v", test.fnName, want, got)
+			}
+		})
+	}
+}
+
+func TestGetPortFromEnv(t *testing.T) {
+
+	var tests = []struct {
+		name string
+		port string
+		want string
+	}{
+		{"blank", "", defaultPort},
+		{"default", defaultPort, defaultPort},
+		{"env-8081", "8081", "8081"},
+		{"env-8082", "8082", "8082"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			os.Setenv(portEnvironmentVariable, test.port)
+			got := getPortFromEnv()
+			if got != test.want {
+				t.Errorf("got incorrect results, want: %v, got: %v", test.want, got)
+			}
+		})
+	}
+}
+
+func TestCreateListenAddress(t *testing.T) {
+	var tests = []struct {
+		name string
+		host string
+		port string
+		want string
+	}{
+		{"blank", "", "", ":"},
+		{"port-only-default", "", defaultPort, ":8080"},
+		{"port-only", "", "8081", ":8081"},
+		{"local-host-default-port", "localhost", defaultPort, "localhost:8080"},
+		{"local-host-port-specified", "localhost", "8081", "localhost:8081"},
+		{"loop-back-default-port", "127.0.0.1", defaultPort, "127.0.0.1:8080"},
+		{"loop-back-port-specified", "127.0.0.1", "8081", "127.0.0.1:8081"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			got := createListenAddress(test.host, test.port)
+			if got != test.want {
+				t.Errorf("got incorrect results, want: %v, got: %v", test.want, got)
 			}
 		})
 	}
