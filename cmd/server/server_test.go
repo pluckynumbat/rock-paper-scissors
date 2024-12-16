@@ -205,3 +205,27 @@ func TestGetPortFromEnv(t *testing.T) {
 	}
 }
 
+func TestGetPortFromEnvTableDriven(t *testing.T) {
+
+	var tests = []struct {
+		name string
+		port string
+		want string
+	}{
+		{"blank", "", defaultPort},
+		{"default", defaultPort, defaultPort},
+		{"env-8081", "8081", "8081"},
+		{"env-8082", "8082", "8082"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			os.Setenv(portEnvironmentVariable, test.port)
+			got := getPortFromEnv()
+			if got != test.want {
+				t.Errorf("got incorrect results, want: %v, got: %v", test.want, got)
+			}
+		})
+	}
+}
